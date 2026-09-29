@@ -738,7 +738,7 @@ setInterval(() => { if (!$('#appView').hidden && view === 'bookings' && document
   try {
     const s = await api('/api/session');
     if (s.authed) return showApp();
-    if (s.storage === 'none') return showLogin('<span class="text-danger">Chưa kết nối Upstash Redis. Vào Vercel → Storage → tạo Upstash Redis, kết nối với project rồi Redeploy.</span>');
+    if (s.storage === 'none') return showLogin('<span class="text-danger">Chưa cấu hình Supabase. Thêm SUPABASE_URL và SUPABASE_SECRET_KEY trong Vercel → Settings → Environment Variables rồi Redeploy.</span>');
     showLogin(s.passwordSet ? '' : 'Chưa có mật khẩu admin. Vào Vercel → Settings → Environment Variables, thêm <code class="rounded bg-muted px-1.5 py-0.5 text-fg">ADMIN_PASSWORD</code> (≥ 8 ký tự) rồi Redeploy.');
   } catch {
     showLogin('<span class="text-danger">Không kết nối được API. Trên máy, hãy chạy <code>npm run dev</code>.</span>');

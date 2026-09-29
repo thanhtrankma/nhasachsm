@@ -1,4 +1,4 @@
-import { route, send, readBody, clientIp, checkPassword, passwordConfigured, newToken, sessionCookie, SESSION_TTL, HttpError } from '../lib/http.js';
+import { route, send, readBody, clientIp, checkPassword, passwordConfigured, createSession, sessionCookie, SESSION_TTL, HttpError } from '../lib/http.js';
 import { store } from '../lib/store.js';
 
 const MAX_FAILS = 5, WINDOW = 600; // 5 wrong passwords → locked 10 minutes
@@ -14,8 +14,6 @@ export default route({
       throw new HttpError(401, 'Mật khẩu không đúng');
     }
     await store.reset(key);
-    const tok = newToken();
-    await store.createSession(tok, SESSION_TTL);
-    send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(tok, SESSION_TTL) });
+    send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(await createSession(), SESSION_TTL) });
   },
 });

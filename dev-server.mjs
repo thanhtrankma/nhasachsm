@@ -1,8 +1,8 @@
 // Local stand-in for Vercel: serves static files and runs api/*.js handlers.
 //   npm run dev                      → http://127.0.0.1:3000  (data saved in .local-data/)
 //   ADMIN_PASSWORD=... npm run dev   → set the admin password for local testing
-// If .env.local exists (e.g. from `vercel env pull .env.local`), its variables are loaded,
-// so the dev server can talk to the real Upstash Redis / Vercel Blob.
+// If .env.local exists (SUPABASE_URL, SUPABASE_SECRET_KEY, ADMIN_PASSWORD…), its variables are loaded,
+// so the dev server talks to the real Supabase project.
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -58,6 +58,6 @@ http.createServer(async (req, res) => {
 }).listen(PORT, '127.0.0.1', async () => {
   const { store } = await import('./lib/store.js');
   console.log(`Dev server: http://127.0.0.1:${PORT}   ·   Admin: http://127.0.0.1:${PORT}/admin`);
-  console.log(`Lưu trữ: ${store.kind === 'redis' ? 'Upstash Redis (từ .env.local)' : '.local-data/store.json'}   ·   Ảnh: ${process.env.BLOB_READ_WRITE_TOKEN ? 'Vercel Blob' : 'assets/uploads/'}`);
+  console.log(`Lưu trữ: ${store.kind === 'supabase' ? `Supabase ${process.env.SUPABASE_URL}` : '.local-data/store.json + assets/uploads/'}`);
   if (!process.env.ADMIN_PASSWORD) console.log('Gợi ý: chạy với ADMIN_PASSWORD=matkhau npm run dev để đăng nhập admin lần đầu.');
 });

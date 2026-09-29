@@ -1,4 +1,4 @@
-import { route, send, readBody, checkPassword, hashPassword, sessionToken, HttpError } from '../lib/http.js';
+import { route, send, readBody, checkPassword, hashPassword, createSession, sessionCookie, SESSION_TTL, HttpError } from '../lib/http.js';
 import { store } from '../lib/store.js';
 
 export default route({
@@ -9,8 +9,9 @@ export default route({
       if (!(await checkPassword(String(current || '')))) throw new HttpError(400, 'Mật khẩu hiện tại không đúng');
       if (String(next || '').length < 8) throw new HttpError(400, 'Mật khẩu mới cần ít nhất 8 ký tự');
       await store.setAdmin(hashPassword(String(next)));
-      await store.deleteOtherSessions(sessionToken(req)); // sign out other devices
-      send(res, 200, { ok: true });
+      // Sessions are bound to the password version: every other device is now signed out,
+      // so hand this browser a fresh cookie.
+      send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(await createSession(), SESSION_TTL) });
     },
   },
 });

@@ -1,10 +1,5 @@
-import { route, send, sessionToken, sessionCookie } from '../lib/http.js';
-import { store } from '../lib/store.js';
+import { route, send, sessionCookie } from '../lib/http.js';
 
 export default route({
-  POST: async (req, res) => {
-    const tok = sessionToken(req);
-    if (tok) await store.deleteSession(tok);
-    send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie('', 0) });
-  },
+  POST: async (req, res) => send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie('', 0) }),
 });

@@ -6,6 +6,6 @@ export default route({
     ok: true,
     authed: await isAuthed(req),
     passwordSet: await passwordConfigured(),
-    storage: store.kind, // 'redis' | 'file' | 'none'
+    storage: store.kind, // 'supabase' | 'file' | 'none'
   }),
 });
