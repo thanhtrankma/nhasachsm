@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Quản trị website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/theme.js"></script>
+  <style type="text/tailwindcss">
+  @layer components {
+    .field { @apply block min-h-[44px] w-full rounded-lg border-2 border-line bg-card px-3 py-2.5 text-base text-fg placeholder-slate-400 transition-colors duration-150; }
+    .field:focus { @apply border-primary outline-none; }
+    .btn { @apply inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50; }
+    .btn-accent { @apply btn bg-accent text-white hover:bg-accent-hover; }
+    .btn-primary { @apply btn bg-primary text-white hover:bg-primary-hover; }
+    .btn-outline { @apply btn border-2 border-line bg-card text-fg hover:border-primary hover:text-primary; }
+    .btn-ghost { @apply btn text-muted-fg hover:bg-bg hover:text-fg; }
+    .btn-icon { @apply grid h-10 w-10 cursor-pointer place-items-center rounded-lg text-muted-fg transition-colors duration-150 hover:bg-bg hover:text-fg disabled:cursor-not-allowed disabled:opacity-30; }
+    .card { @apply rounded-2xl border-2 border-line bg-card; }
+    .nav-item { @apply flex min-h-[44px] w-full cursor-pointer items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-left font-medium text-fg transition-colors duration-150 hover:bg-bg; }
+    .nav-item[aria-current="page"] { @apply bg-primary text-white hover:bg-primary; }
+    .lbl { @apply block font-semibold text-fg; }
+    .help { @apply text-sm text-muted-fg; }
+  }
+  </style>
+</head>
+<body class="min-h-screen bg-bg font-sans text-base text-muted-fg antialiased">
+
+<!-- ================= LOGIN ================= -->
+<main id="loginView" class="grid min-h-screen place-items-center p-4" hidden>
+  <form id="loginForm" class="card w-full max-w-sm p-6 sm:p-8">
+    <span class="grid h-12 w-12 place-items-center rounded-xl bg-primary text-white"><i data-icon="user" class="h-6 w-6"></i></span>
+    <h1 class="mt-4 text-2xl font-extrabold text-fg">Đăng nhập quản trị</h1>
+    <p id="loginHint" class="mt-1 text-sm">Nhập mật khẩu để chỉnh sửa nội dung website.</p>
+    <label for="password" class="lbl mt-6">Mật khẩu</label>
+    <input id="password" type="password" autocomplete="current-password" class="field mt-1.5" required />
+    <p id="loginError" class="mt-2 text-sm font-medium text-danger" role="alert" hidden></p>
+    <button class="btn-primary mt-6 w-full" type="submit">Đăng nhập</button>
+    <a href="/" class="btn-ghost mt-2 w-full">← Về trang chủ</a>
+  </form>
+</main>
+
+<!-- ================= APP ================= -->
+<div id="appView" hidden>
+  <header class="sticky top-0 z-30 border-b-2 border-line bg-card">
+    <div class="flex h-16 items-center gap-3 px-4">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-white"><i data-icon="sparkles" class="h-5 w-5"></i></span>
+      <div class="min-w-0 flex-1">
+        <p class="truncate font-extrabold text-fg">Quản trị website</p>
+        <p id="saveStatus" class="truncate text-xs" aria-live="polite">Đã lưu</p>
+      </div>
+      <a href="/" target="_blank" rel="noopener" class="btn-ghost hidden sm:inline-flex"><i data-icon="external" class="h-5 w-5"></i>Xem trang</a>
+      <button id="saveBtn" type="button" class="btn-accent" disabled><i data-icon="save" class="h-5 w-5"></i><span class="hidden sm:inline">Lưu thay đổi</span><span class="sm:hidden">Lưu</span></button>
+      <button id="logoutBtn" type="button" class="btn-icon" aria-label="Đăng xuất" title="Đăng xuất"><i data-icon="logout" class="h-5 w-5"></i></button>
+    </div>
+    <!-- mobile nav -->
+    <nav id="navMobile" class="flex gap-1 overflow-x-auto border-t border-line px-2 py-2 lg:hidden" aria-label="Mục quản trị"></nav>
+  </header>
+
+  <div class="mx-auto flex max-w-7xl gap-6 px-4 py-6">
+    <aside class="hidden w-64 shrink-0 lg:block">
+      <nav id="navDesktop" class="card sticky top-24 space-y-1 p-2" aria-label="Mục quản trị"></nav>
+    </aside>
+    <main id="panel" class="min-w-0 flex-1 pb-24"></main>
+  </div>
+</div>
+
+<!-- Media library -->
+<div id="mediaModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-900/60 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="mediaTitle">
+  <div class="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-t-2xl bg-card sm:rounded-2xl">
+    <div class="flex items-center justify-between border-b-2 border-line p-4">
+      <h2 id="mediaTitle" class="text-lg font-bold text-fg">Thư viện ảnh</h2>
+      <button type="button" class="btn-icon" data-close-media aria-label="Đóng"><i data-icon="close" class="h-5 w-5"></i></button>
+    </div>
+    <div id="mediaGrid" class="grid grid-cols-3 gap-2 overflow-y-auto p-4 sm:grid-cols-5"></div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toasts" class="pointer-events-none fixed bottom-4 left-1/2 z-[60] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 flex-col gap-2" aria-live="polite"></div>
+
+<script src="assets/js/icons.js"></script>
+<script>
+/* =====================================================================
+   SCHEMA – mô tả các trường chỉnh sửa. Thêm trường mới chỉ cần sửa ở đây.
+   t: text | textarea | money | bool | image | icon | strings | list
+   ===================================================================== */
+const SECTIONS = [
+  { id: 'brand', icon: 'sparkles', title: 'Thương hiệu & liên hệ', desc: 'Logo, tên thương hiệu, hotline và thông tin liên hệ ở header, footer.', fields: [
+    { k: 'brand.logo', l: 'Logo', t: 'image', help: 'Để trống sẽ dùng biểu tượng mặc định. Nên dùng PNG nền trong suốt, cao tối thiểu 80px.' },
+    { k: 'brand.name1', l: 'Tên thương hiệu – phần 1', half: true },
+    { k: 'brand.name2', l: 'Tên thương hiệu – phần 2 (màu xanh lá)', half: true },
+    { k: 'contact.phone', l: 'Hotline', half: true, help: 'Dùng cho nút “Gọi ngay” và mọi liên kết gọi điện.' },
+    { k: 'contact.email', l: 'Email', half: true },
+    { k: 'contact.address', l: 'Địa chỉ' },
+    { k: 'contact.hours', l: 'Giờ làm việc' },
+    { k: 'promo.enabled', l: 'Hiện dải khuyến mãi trên cùng trang', t: 'bool' },
+    { k: 'promo.text', l: 'Nội dung dải khuyến mãi' },
+  ]},
+  { id: 'hero', icon: 'image', title: 'Banner (Hero)', desc: 'Phần đầu trang: ảnh banner, tiêu đề, nút đặt lịch và cam kết.', fields: [
+    { k: 'hero.image', l: 'Ảnh banner', t: 'image', help: 'Ảnh dọc hoặc vuông, tối thiểu 800px chiều rộng.' },
+    { k: 'hero.imageAlt', l: 'Mô tả ảnh (cho người khiếm thị & SEO)' },
+    { k: 'hero.captionTitle', l: 'Nhãn trên ảnh – tiêu đề', half: true, help: 'Để trống để ẩn nhãn.' },
+    { k: 'hero.captionText', l: 'Nhãn trên ảnh – mô tả', half: true },
+    { k: 'hero.badge', l: 'Dòng giới thiệu nhỏ phía trên tiêu đề' },
+    { k: 'hero.title', l: 'Tiêu đề chính', half: true },
+    { k: 'hero.titleHighlight', l: 'Phần tiêu đề tô xanh lá', half: true },
+    { k: 'hero.subtitle', l: 'Mô tả ngắn', t: 'textarea' },
+    { k: 'hero.surveyCtaTitle', l: 'Nút khảo sát – tiêu đề', half: true },
+    { k: 'hero.surveyCtaSub', l: 'Nút khảo sát – mô tả', half: true },
+    { k: 'hero.comboCtaTitle', l: 'Nút combo – tiêu đề', help: 'Giá “Từ …” được lấy tự động từ gói rẻ nhất trong Bảng giá.' },
+    { k: 'hero.bullets', l: 'Các ý nổi bật (dấu tích xanh)', t: 'strings', add: 'Thêm ý' },
+    { k: 'commitments', l: 'Dải cam kết dưới banner', t: 'list', add: 'Thêm cam kết', sum: 'title',
+      newItem: () => ({ icon: 'check', title: 'Cam kết mới', text: '' }),
+      fields: [{ k: 'icon', l: 'Biểu tượng', t: 'icon' }, { k: 'title', l: 'Tiêu đề', half: true }, { k: 'text', l: 'Mô tả', half: true }] },
+  ]},
+  { id: 'services', icon: 'building', title: 'Dịch vụ', desc: 'Nhóm 1 (đặt lịch khảo sát) và Nhóm 2 (gói combo).', fields: [
+    { k: 'services.eyebrow', l: 'Nhãn nhỏ', half: true },
+    { k: 'services.title', l: 'Tiêu đề mục', half: true },
+    { k: 'services.group1Title', l: 'Tiêu đề Nhóm 1 – khảo sát' },
+    { k: 'services.items', l: 'Dịch vụ khảo sát', t: 'list', add: 'Thêm dịch vụ', sum: 'name', min: 1,
+      help: 'Mỗi dịch vụ cũng là một lựa chọn trong form “Đặt lịch khảo sát”.',
+      newItem: () => ({ name: 'Dịch vụ mới', icon: 'sparkles', desc: '', promo: '' }),
+      fields: [
+        { k: 'name', l: 'Tên dịch vụ' }, { k: 'icon', l: 'Biểu tượng', t: 'icon' },
+        { k: 'desc', l: 'Mô tả', t: 'textarea' },
+        { k: 'promo', l: 'Ưu đãi (tuỳ chọn)', help: 'VD: Miễn phí cước xe 3km đầu. Để trống nếu không có.' }] },
+    { k: 'services.group2Title', l: 'Tiêu đề Nhóm 2 – combo' },
+    { k: 'services.comboTitle', l: 'Tên gói combo' },
+    { k: 'services.comboDesc', l: 'Mô tả gói combo', t: 'textarea' },
+    { k: 'services.comboFeatures', l: 'Hạng mục trong combo', t: 'list', add: 'Thêm hạng mục', sum: 'label',
+      newItem: () => ({ icon: 'check', label: 'Hạng mục mới' }),
+      fields: [{ k: 'icon', l: 'Biểu tượng', t: 'icon' }, { k: 'label', l: 'Tên hạng mục' }] },
+  ]},
+  { id: 'pricing', icon: 'tag', title: 'Bảng giá', desc: 'Các gói combo. Giá dùng cho bảng giá, form đặt lịch và tính tổng tiền.', fields: [
+    { k: 'pricing.eyebrow', l: 'Nhãn nhỏ', half: true },
+    { k: 'pricing.title', l: 'Tiêu đề mục', half: true },
+    { k: 'pricing.subtitle', l: 'Mô tả', t: 'textarea' },
+    { k: 'pricing.packages', l: 'Các gói giá', t: 'list', add: 'Thêm gói', sum: 'name', min: 1,
+      newItem: () => ({ id: 'p' + Date.now().toString(36), name: 'Gói mới', desc: '', original: 0, price: 0, popular: false, features: [] }),
+      fields: [
+        { k: 'name', l: 'Tên gói', half: true }, { k: 'desc', l: 'Phù hợp cho', half: true },
+        { k: 'original', l: 'Giá gốc', t: 'money', half: true }, { k: 'price', l: 'Giá ưu đãi', t: 'money', half: true },
+        { k: 'popular', l: 'Đánh dấu “Phổ biến nhất”', t: 'bool' },
+        { k: 'features', l: 'Quyền lợi trong gói', t: 'strings', add: 'Thêm quyền lợi' }] },
+  ]},
+  { id: 'gallery', icon: 'image', title: 'Công trình (ảnh)', desc: 'Ảnh trước & sau cho thanh kéo so sánh.', fields: [
+    { k: 'gallery.eyebrow', l: 'Nhãn nhỏ', half: true },
+    { k: 'gallery.title', l: 'Tiêu đề mục', half: true },
+    { k: 'gallery.subtitle', l: 'Mô tả', t: 'textarea' },
+    { k: 'gallery.ctaTitle', l: 'Ô kêu gọi – tiêu đề', half: true },
+    { k: 'gallery.ctaText', l: 'Ô kêu gọi – mô tả', half: true },
+    { k: 'gallery.items', l: 'Công trình', t: 'list', add: 'Thêm công trình', sum: 'label', thumb: 'after',
+      help: 'Ảnh “Trước” và “Sau” nên cùng tỉ lệ khung hình (ví dụ cùng 660×570).',
+      newItem: () => ({ label: 'Công trình mới', before: '', after: '', thumb: '' }),
+      fields: [
+        { k: 'label', l: 'Tên công trình' },
+        { k: 'before', l: 'Ảnh TRƯỚC', t: 'image', half: true }, { k: 'after', l: 'Ảnh SAU', t: 'image', half: true },
+        { k: 'thumb', l: 'Ảnh thu nhỏ (tuỳ chọn)', t: 'image', help: 'Để trống sẽ dùng ảnh SAU.' }] },
+  ]},
+  { id: 'process', icon: 'list', title: 'Quy trình', desc: 'Các bước đặt lịch. Bước cuối được tô xanh lá.', fields: [
+    { k: 'process.eyebrow', l: 'Nhãn nhỏ', half: true },
+    { k: 'process.title', l: 'Tiêu đề mục', half: true },
+    { k: 'process.steps', l: 'Các bước', t: 'list', add: 'Thêm bước', sum: 'title',
+      newItem: () => ({ title: 'Bước mới', text: '' }),
+      fields: [{ k: 'title', l: 'Tiêu đề' }, { k: 'text', l: 'Mô tả', t: 'textarea' }] },
+  ]},
+  { id: 'faq', icon: 'help', title: 'Form đặt lịch & Hỏi đáp', desc: 'Khung giờ trong form và các câu hỏi thường gặp.', fields: [
+    { k: 'booking.title', l: 'Tiêu đề form đặt lịch' },
+    { k: 'booking.slots', l: 'Các khung giờ khách chọn', t: 'strings', add: 'Thêm khung giờ' },
+    { k: 'booking.note', l: 'Ghi chú dưới nút đặt lịch' },
+    { k: 'faq.title', l: 'Tiêu đề mục Hỏi đáp' },
+    { k: 'faq.items', l: 'Câu hỏi', t: 'list', add: 'Thêm câu hỏi', sum: 'q',
+      newItem: () => ({ q: 'Câu hỏi mới?', a: '' }),
+      fields: [{ k: 'q', l: 'Câu hỏi' }, { k: 'a', l: 'Trả lời', t: 'textarea' }] },
+  ]},
+  { id: 'footer', icon: 'layout', title: 'Footer & SEO', desc: 'Chân trang và thông tin hiển thị trên Google.', fields: [
+    { k: 'footer.about', l: 'Giới thiệu ngắn ở footer', t: 'textarea' },
+    { k: 'footer.copyright', l: 'Dòng bản quyền', help: 'Năm hiện tại được thêm tự động phía trước.' },
+    { k: 'seo.title', l: 'Tiêu đề trang (SEO)', help: 'Nên dưới 60 ký tự.' },
+    { k: 'seo.description', l: 'Mô tả trang (SEO)', t: 'textarea', help: 'Nên 120–160 ký tự.' },
+  ]},
+];
+const VIEWS = [
+  ...SECTIONS.map(s => ({ id: s.id, icon: s.icon, title: s.title })),
+  { id: 'bookings', icon: 'inbox', title: 'Đơn đặt lịch', divider: true },
+  { id: 'account', icon: 'user', title: 'Mật khẩu & sao lưu' },
+];
+const ICON_LABELS = { building: 'Toà nhà', calendar: 'Lịch', truck: 'Xe tải', spray: 'Bình xịt', wind: 'Gió', fan: 'Bụi mịn', shield: 'Bảo vệ', clipboard: 'Khảo sát', receipt: 'Hoá đơn', clock: 'Đồng hồ', sparkles: 'Lấp lánh', gift: 'Quà', home: 'Nhà', star: 'Ngôi sao', users: 'Đội ngũ', leaf: 'Lá', droplet: 'Nước', check: 'Dấu tích', phone: 'Điện thoại', pin: 'Địa điểm' };
+const STATUS = {
+  new:       { l: 'Mới',           c: 'bg-accent-soft text-accent-hover' },
+  contacted: { l: 'Đã liên hệ',    c: 'bg-primary-soft text-primary' },
+  confirmed: { l: 'Đã chốt lịch',  c: 'bg-yellow-100 text-yellow-800' },
+  done:      { l: 'Hoàn thành',    c: 'bg-success-soft text-success' },
+  cancelled: { l: 'Đã huỷ',        c: 'bg-muted text-muted-fg' },
+};
+
+/* ================== HELPERS ================== */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const vnd = n => Number(n || 0).toLocaleString('vi-VN') + 'đ';
+const clone = o => JSON.parse(JSON.stringify(o));
+const getPath = (o, p) => p.split('.').reduce((a, k) => a?.[k], o);
+function setPath(o, p, v) {
+  const ks = p.split('.'); const last = ks.pop();
+  const parent = ks.reduce((a, k) => (a[k] ??= {}), o);
+  parent[last] = v;
+}
+const fmtTime = iso => iso ? new Date(iso).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+const fmtDate = d => d ? new Date(d + 'T00:00').toLocaleDateString('vi-VN') : '';
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    credentials: 'same-origin', ...opts,
+    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    body: opts.body && typeof opts.body !== 'string' ? JSON.stringify(opts.body) : opts.body,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && path !== '/api/login') { showLogin(); throw new Error('Phiên đăng nhập đã hết hạn'); }
+  if (!res.ok) throw new Error(data.error || `Lỗi ${res.status}`);
+  return data;
+}
+
+function toast(msg, kind = 'ok') {
+  const el = document.createElement('div');
+  el.className = `pointer-events-auto flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-white ${kind === 'err' ? 'bg-danger' : 'bg-fg'}`;
+  el.innerHTML = iconSvg(kind === 'err' ? 'alert' : 'check') + `<span>${esc(msg)}</span>`;
+  $('#toasts').append(el);
+  setTimeout(() => el.remove(), kind === 'err' ? 6000 : 3000);
+}
+
+/* ================== STATE ================== */
+let draft = null, savedJSON = '', view = 'brand', bookings = [], bookingFilter = 'all', bookingQuery = '';
+const openItems = new Set();
+const isDirty = () => draft && JSON.stringify(draft) !== savedJSON;
+
+function markDirty() {
+  const d = isDirty();
+  $('#saveBtn').disabled = !d;
+  $('#saveStatus').textContent = d ? '● Có thay đổi chưa lưu' : 'Đã lưu';
+  $('#saveStatus').className = `truncate text-xs ${d ? 'font-semibold text-accent' : ''}`;
+}
+
+/* ================== NAV ================== */
+function renderNav() {
+  const newCount = bookings.filter(b => b.status === 'new').length;
+  const item = v => `
+    ${v.divider ? '<hr class="my-2 border-line" />' : ''}
+    <button type="button" class="nav-item" data-view="${v.id}" ${v.id === view ? 'aria-current="page"' : ''}>
+      ${iconSvg(v.icon)}<span class="flex-1">${esc(v.title)}</span>
+      ${v.id === 'bookings' && newCount ? `<span class="rounded-full bg-accent px-2 text-xs font-bold text-white">${newCount}</span>` : ''}
+    </button>`;
+  $('#navDesktop').innerHTML = VIEWS.map(item).join('');
+  $('#navMobile').innerHTML = VIEWS.map(v => item({ ...v, divider: false })).join('');
+  $('#navMobile [aria-current]')?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-view]');
+  if (!b) return;
+  view = b.dataset.view;
+  renderNav(); renderPanel();
+  window.scrollTo({ top: 0 });
+});
+
+/* ================== FIELD RENDERERS ================== */
+const fid = p => 'f_' + p.replace(/[^\w]/g, '_');
+
+function wrap(f, path, control) {
+  return `<div class="space-y-1.5 ${f.half ? 'sm:col-span-1' : 'sm:col-span-2'}">
+    ${f.t === 'bool' ? '' : `<label class="lbl" for="${fid(path)}">${esc(f.l)}</label>`}
+    ${control}
+    ${f.help ? `<p class="help">${esc(f.help)}</p>` : ''}
+  </div>`;
+}
+
+function imagePreview(src) {
+  return src
+    ? `<img src="${esc(src)}" alt="" class="h-full w-full object-cover" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'text-xs text-danger p-2 text-center',textContent:'Không tìm thấy ảnh'}))" />`
+    : iconSvg('image', 'h-8 w-8 text-slate-400');
+}
+
+function fieldHTML(f, base = '') {
+  const path = base ? `${base}.${f.k}` : f.k;
+  const v = getPath(draft, path);
+  const id = fid(path);
+  switch (f.t) {
+    case 'textarea':
+      return wrap(f, path, `<textarea id="${id}" class="field" rows="3" data-path="${path}">${esc(v)}</textarea>`);
+    case 'money':
+      return wrap(f, path, `<div class="relative">
+          <input id="${id}" type="number" inputmode="numeric" min="0" step="1000" class="field pr-10 tabular-nums" data-path="${path}" data-type="money" value="${Number(v) || 0}" />
+          <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-semibold">đ</span></div>
+        <p class="help tabular-nums" data-money-hint>= ${vnd(v)}</p>`);
+    case 'bool':
+      return wrap(f, path, `<label class="flex min-h-[44px] cursor-pointer items-center gap-3">
+          <input id="${id}" type="checkbox" class="peer sr-only" data-path="${path}" data-type="bool" ${v ? 'checked' : ''} />
+          <span class="relative h-7 w-12 shrink-0 rounded-full bg-slate-300 transition-colors duration-150 after:absolute after:left-1 after:top-1 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:duration-150 peer-checked:bg-success peer-checked:after:translate-x-5 peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-secondary"></span>
+          <span class="font-semibold text-fg">${esc(f.l)}</span></label>`);
+    case 'image':
+      return wrap(f, path, `<div class="flex items-start gap-3" data-imgwrap>
+          <div class="grid h-24 w-28 shrink-0 place-items-center overflow-hidden rounded-lg border-2 border-line bg-muted" data-preview>${imagePreview(v)}</div>
+          <div class="min-w-0 flex-1 space-y-2">
+            <input id="${id}" class="field text-sm" data-path="${path}" data-type="image" value="${esc(v)}" placeholder="Chưa có ảnh" />
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-outline !min-h-[40px] !px-3 text-sm">${iconSvg('upload', 'h-4 w-4')}Tải lên
+                <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" data-upload="${path}" /></label>
+              <button type="button" class="btn-outline !min-h-[40px] !px-3 text-sm" data-media="${path}">${iconSvg('image', 'h-4 w-4')}Thư viện</button>
+              ${v ? `<button type="button" class="btn-ghost !min-h-[40px] !px-3 text-sm" data-clear="${path}">Bỏ ảnh</button>` : ''}
+            </div>
+          </div></div>`);
+    case 'icon':
+      return wrap(f, path, `<div class="flex flex-wrap gap-1.5" role="radiogroup" aria-label="${esc(f.l)}">
+        ${CONTENT_ICONS.map(ic => `<label title="${ICON_LABELS[ic] || ic}" class="cursor-pointer">
+          <input type="radio" name="${id}" value="${ic}" class="peer sr-only" data-path="${path}" ${v === ic ? 'checked' : ''} aria-label="${ICON_LABELS[ic] || ic}" />
+          <span class="grid h-10 w-10 place-items-center rounded-lg border-2 border-line text-fg transition-colors duration-150 hover:border-secondary peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-secondary">${iconSvg(ic)}</span>
+        </label>`).join('')}</div>`);
+    case 'strings': {
+      const arr = Array.isArray(v) ? v : [];
+      return wrap(f, path, `<div class="space-y-2">
+        ${arr.map((s, i) => `<div class="flex items-center gap-1">
+          <input class="field" data-path="${path}.${i}" value="${esc(s)}" aria-label="${esc(f.l)} ${i + 1}" />
+          <button type="button" class="btn-icon" data-op="up" data-list="${path}" data-i="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Lên">${iconSvg('up')}</button>
+          <button type="button" class="btn-icon" data-op="down" data-list="${path}" data-i="${i}" ${i === arr.length - 1 ? 'disabled' : ''} aria-label="Xuống">${iconSvg('chevron')}</button>
+          <button type="button" class="btn-icon hover:!text-danger" data-op="del" data-list="${path}" data-i="${i}" aria-label="Xoá">${iconSvg('trash')}</button>
+        </div>`).join('')}
+        <button type="button" class="btn-outline !min-h-[40px] text-sm" data-op="add" data-list="${path}" data-kind="string">${iconSvg('plus', 'h-4 w-4')}${esc(f.add || 'Thêm')}</button>
+      </div>`);
+    }
+    case 'list': {
+      const arr = Array.isArray(v) ? v : [];
+      return `<div class="space-y-3 sm:col-span-2">
+        <div><p class="lbl">${esc(f.l)} <span class="font-normal text-muted-fg">(${arr.length})</span></p>${f.help ? `<p class="help mt-1">${esc(f.help)}</p>` : ''}</div>
+        ${arr.map((item, i) => {
+          const ip = `${path}.${i}`;
+          return `<details class="rounded-xl border-2 border-line bg-card" data-item="${ip}" ${openItems.has(ip) ? 'open' : ''}>
+            <summary class="flex min-h-[56px] items-center gap-2 px-3 py-2">
+              ${iconSvg('chevron', 'chev h-5 w-5 text-muted-fg')}
+              <span class="min-w-0 flex-1 truncate font-semibold text-fg" data-sum>${itemSummary(f, item, i)}</span>
+              <button type="button" class="btn-icon" data-op="up" data-list="${path}" data-i="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Chuyển lên">${iconSvg('up')}</button>
+              <button type="button" class="btn-icon" data-op="down" data-list="${path}" data-i="${i}" ${i === arr.length - 1 ? 'disabled' : ''} aria-label="Chuyển xuống">${iconSvg('chevron')}</button>
+              <button type="button" class="btn-icon hover:!text-danger" data-op="del" data-list="${path}" data-i="${i}" ${f.min && arr.length <= f.min ? 'disabled' : ''} aria-label="Xoá">${iconSvg('trash')}</button>
+            </summary>
+            <div class="grid gap-4 border-t-2 border-line p-4 sm:grid-cols-2">${f.fields.map(sf => fieldHTML(sf, ip)).join('')}</div>
+          </details>`;
+        }).join('')}
+        <button type="button" class="btn-outline" data-op="add" data-list="${path}">${iconSvg('plus', 'h-5 w-5')}${esc(f.add || 'Thêm')}</button>
+      </div>`;
+    }
+    default:
+      return wrap(f, path, `<input id="${id}" class="field" data-path="${path}" value="${esc(v)}" />`);
+  }
+}
+
+function itemSummary(f, item, i) {
+  const label = esc(item?.[f.sum] || `Mục ${i + 1}`);
+  const thumb = f.thumb && item?.[f.thumb] ? `<img src="${esc(item[f.thumb])}" alt="" class="h-9 w-12 shrink-0 rounded object-cover" />` : '';
+  const icon = item?.icon ? iconSvg(item.icon, 'h-5 w-5 text-primary') : '';
+  let extra = '';
+  if ('price' in (item || {})) {
+    const d = item.original > 0 ? Math.round((1 - item.price / item.original) * 100) : 0;
+    extra = `<span class="ml-2 font-normal text-muted-fg">${vnd(item.price)}${d > 0 ? ` · −${d}%` : ''}${item.popular ? ' · Phổ biến' : ''}</span>`;
+  }
+  return `<span class="flex items-center gap-2">${thumb}${icon}<span class="truncate">${label}${extra}</span></span>`;
+}
+
+function findListField(path) {
+  // path like "pricing.packages" or "pricing.packages.0.features"
+  const walk = (fields, base) => {
+    for (const f of fields) {
+      const p = base ? `${base}.${f.k}` : f.k;
+      if (p === path) return f;
+      if (f.t === 'list' && path.startsWith(p + '.')) {
+        const rest = path.slice(p.length + 1).split('.');
+        const found = walk(f.fields, `${p}.${rest[0]}`);
+        if (found) return found;
+      }
+    }
+  };
+  for (const s of SECTIONS) { const f = walk(s.fields, ''); if (f) return f; }
+}
+
+/* ================== PANEL ================== */
+function renderPanel() {
+  if (view === 'bookings') return renderBookings();
+  if (view === 'account') return renderAccount();
+  const s = SECTIONS.find(x => x.id === view);
+  $('#panel').innerHTML = `
+    <div class="mb-5">
+      <h1 class="text-2xl font-extrabold text-fg">${esc(s.title)}</h1>
+      <p class="mt-1">${esc(s.desc)}</p>
+    </div>
+    <div class="card grid gap-5 p-5 sm:grid-cols-2 sm:p-6">${s.fields.map(f => fieldHTML(f)).join('')}</div>`;
+}
+
+const panel = $('#panel');
+function onFieldInput(e) {
+  const el = e.target.closest('[data-path]');
+  if (!el || !draft) return;
+  const t = el.dataset.type;
+  let v = el.value;
+  if (t === 'bool') v = el.checked;
+  else if (t === 'money') v = Math.max(0, parseInt(el.value || '0', 10) || 0);
+  setPath(draft, el.dataset.path, v);
+  if (t === 'money') el.closest('.space-y-1\\.5').querySelector('[data-money-hint]').textContent = '= ' + vnd(v);
+  if (t === 'image') el.closest('[data-imgwrap]').querySelector('[data-preview]').innerHTML = imagePreview(v);
+  const det = el.closest('details[data-item]');
+  if (det) {
+    const listPath = det.dataset.item.replace(/\.\d+$/, '');
+    const f = findListField(listPath);
+    const i = Number(det.dataset.item.split('.').pop());
+    if (f) det.querySelector(':scope > summary [data-sum]').innerHTML = itemSummary(f, getPath(draft, det.dataset.item), i);
+  }
+  markDirty();
+}
+panel.addEventListener('input', onFieldInput);
+panel.addEventListener('change', onFieldInput);
+panel.addEventListener('toggle', e => {
+  const d = e.target;
+  if (d.matches?.('details[data-item]')) d.open ? openItems.add(d.dataset.item) : openItems.delete(d.dataset.item);
+}, true);
+
+panel.addEventListener('click', async e => {
+  const op = e.target.closest('[data-op]');
+  if (op) {
+    e.preventDefault(); e.stopPropagation();
+    const path = op.dataset.list, i = Number(op.dataset.i);
+    const arr = getPath(draft, path) || [];
+    if (!Array.isArray(getPath(draft, path))) setPath(draft, path, arr);
+    if (op.dataset.op === 'add') {
+      const f = op.dataset.kind === 'string' ? null : findListField(path);
+      arr.push(f?.newItem ? f.newItem() : '');
+      openItems.add(`${path}.${arr.length - 1}`);
+    } else if (op.dataset.op === 'del') {
+      const label = op.closest('summary')?.querySelector('[data-sum]')?.textContent.trim();
+      if (label && !confirm(`Xoá “${label}”?`)) return;
+      arr.splice(i, 1);
+      [...openItems].filter(k => k.startsWith(path + '.')).forEach(k => openItems.delete(k));
+    } else {
+      const j = op.dataset.op === 'up' ? i - 1 : i + 1;
+      if (j < 0 || j >= arr.length) return;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      const a = `${path}.${i}`, b = `${path}.${j}`, ao = openItems.has(a), bo = openItems.has(b);
+      openItems.delete(a); openItems.delete(b);
+      if (ao) openItems.add(b); if (bo) openItems.add(a);
+    }
+    renderPanel(); markDirty();
+    return;
+  }
+  const clr = e.target.closest('[data-clear]');
+  if (clr) { setPath(draft, clr.dataset.clear, ''); renderPanel(); markDirty(); return; }
+  const media = e.target.closest('[data-media]');
+  if (media) openMedia(media.dataset.media);
+});
+
+/* ================== UPLOAD & MEDIA ================== */
+function readDataURL(blob) {
+  return new Promise((ok, fail) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = fail; r.readAsDataURL(blob); });
+}
+const MAX_UPLOAD_CHARS = 4_000_000; // Vercel caps request bodies at 4.5MB (base64 adds ~33%)
+async function prepareImage(file) {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error('Chỉ nhận ảnh JPG, PNG hoặc WebP');
+  const bmp = await createImageBitmap(file);
+  let max = 1800, quality = 0.85;
+  if (Math.max(bmp.width, bmp.height) <= max && file.size < 1.5e6) return readDataURL(file);
+  // Shrink until it fits; PNG keeps transparency, others become JPEG.
+  for (let tries = 0; tries < 6; tries++) {
+    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const cv = Object.assign(document.createElement('canvas'), { width: Math.round(bmp.width * scale), height: Math.round(bmp.height * scale) });
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    const url = cv.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', quality);
+    if (url.length < MAX_UPLOAD_CHARS) return url;
+    max = Math.round(max * 0.75); quality = Math.max(0.6, quality - 0.1);
+  }
+  throw new Error('Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn');
+}
+panel.addEventListener('change', async e => {
+  const input = e.target.closest('[data-upload]');
+  if (!input || !input.files[0]) return;
+  const path = input.dataset.upload, label = input.closest('label');
+  label.classList.add('opacity-60', 'pointer-events-none');
+  try {
+    const data = await prepareImage(input.files[0]);
+    const res = await api('/api/upload', { method: 'POST', body: { name: input.files[0].name, data } });
+    setPath(draft, path, res.path);
+    renderPanel(); markDirty();
+    toast('Đã tải ảnh lên – nhớ bấm Lưu');
+  } catch (err) { toast(err.message, 'err'); label.classList.remove('opacity-60', 'pointer-events-none'); }
+});
+
+let mediaTarget = null, mediaReturn = null;
+async function openMedia(path) {
+  mediaTarget = path; mediaReturn = document.activeElement;
+  const m = $('#mediaModal'); m.classList.remove('hidden'); m.classList.add('flex');
+  $('#mediaGrid').innerHTML = '<p class="col-span-full p-6 text-center">Đang tải…</p>';
+  try {
+    const { items } = await api('/api/media');
+    $('#mediaGrid').innerHTML = items.length ? items.map(it => `
+      <button type="button" data-pick-media="${esc(it.path)}" class="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-line hover:border-primary" title="${esc(it.path)}">
+        <img src="${esc(it.path)}" alt="${esc(it.path.split('/').pop())}" loading="lazy" class="h-full w-full object-cover" />
+      </button>`).join('') : '<p class="col-span-full p-6 text-center">Chưa có ảnh. Hãy dùng nút “Tải lên”.</p>';
+    $('#mediaGrid button')?.focus();
+  } catch (err) { $('#mediaGrid').innerHTML = `<p class="col-span-full p-6 text-center text-danger">${esc(err.message)}</p>`; }
+}
+function closeMedia() { const m = $('#mediaModal'); m.classList.add('hidden'); m.classList.remove('flex'); mediaReturn?.focus(); }
+$('#mediaModal').addEventListener('click', e => {
+  if (e.target.id === 'mediaModal' || e.target.closest('[data-close-media]')) return closeMedia();
+  const b = e.target.closest('[data-pick-media]');
+  if (b) { setPath(draft, mediaTarget, b.dataset.pickMedia); closeMedia(); renderPanel(); markDirty(); }
+});
+
+/* ================== SAVE ================== */
+function validateDraft() {
+  const pk = draft.pricing?.packages || [];
+  for (const p of pk) {
+    if (!p.name?.trim()) return 'Mỗi gói giá cần có tên';
+    if (p.price > p.original && p.original > 0) return `Gói “${p.name}”: giá ưu đãi đang cao hơn giá gốc`;
+  }
+  if (!draft.services?.items?.length) return 'Cần ít nhất 1 dịch vụ khảo sát';
+  if (draft.services.items.some(s => !s.name?.trim())) return 'Mỗi dịch vụ cần có tên';
+  return '';
+}
+async function save() {
+  if (!isDirty()) return;
+  const err = validateDraft();
+  if (err) return toast(err, 'err');
+  const btn = $('#saveBtn');
+  btn.disabled = true; $('#saveStatus').textContent = 'Đang lưu…';
+  try {
+    await api('/api/content', { method: 'PUT', body: draft });
+    savedJSON = JSON.stringify(draft);
+    toast('Đã lưu – trang web đã được cập nhật');
+  } catch (e) { toast(e.message, 'err'); }
+  markDirty();
+}
+$('#saveBtn').addEventListener('click', save);
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); save(); }
+  if (e.key === 'Escape' && !$('#mediaModal').classList.contains('hidden')) closeMedia();
+});
+window.addEventListener('beforeunload', e => { if (isDirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ================== BOOKINGS ================== */
+async function loadBookings() {
+  try { bookings = (await api('/api/bookings')).items; } catch (e) { toast(e.message, 'err'); }
+  renderNav();
+}
+function bookingWhat(b) {
+  return b.type === 'survey'
+    ? `<span class="rounded-md bg-primary-soft px-2 py-0.5 text-xs font-bold text-primary">KHẢO SÁT</span> ${esc(b.service)}`
+    : `<span class="rounded-md bg-success-soft px-2 py-0.5 text-xs font-bold text-success">COMBO</span> ${b.items.map(i => `${esc(i.name)} × ${i.qty}`).join(', ')} · <b class="text-fg">${vnd(b.total)}</b>`;
+}
+function filteredBookings() {
+  const q = bookingQuery.trim().toLowerCase();
+  return bookings.filter(b => (bookingFilter === 'all' || b.status === bookingFilter)
+    && (!q || [b.name, b.phone, b.address, b.service, b.id].some(x => String(x || '').toLowerCase().includes(q))));
+}
+function renderBookings() {
+  const counts = Object.fromEntries(Object.keys(STATUS).map(k => [k, bookings.filter(b => b.status === k).length]));
+  const list = filteredBookings();
+  $('#panel').innerHTML = `
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div><h1 class="text-2xl font-extrabold text-fg">Đơn đặt lịch</h1><p class="mt-1">${bookings.length} đơn · ${counts.new} đơn mới</p></div>
+      <div class="flex gap-2">
+        <button type="button" class="btn-outline" id="bkRefresh">${iconSvg('refresh')}Tải lại</button>
+        <button type="button" class="btn-outline" id="bkExport" ${list.length ? '' : 'disabled'}>${iconSvg('download')}Xuất Excel (CSV)</button>
+      </div>
+    </div>
+    <div class="card mb-4 space-y-3 p-4">
+      <div class="relative">
+        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-fg">${iconSvg('search')}</span>
+        <input id="bkSearch" class="field pl-10" placeholder="Tìm theo tên, số điện thoại, địa chỉ…" value="${esc(bookingQuery)}" aria-label="Tìm đơn" />
+      </div>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Lọc theo trạng thái">
+        ${[['all', 'Tất cả', bookings.length], ...Object.entries(STATUS).map(([k, s]) => [k, s.l, counts[k]])].map(([k, l, n]) =>
+          `<button type="button" data-bk-filter="${k}" aria-pressed="${bookingFilter === k}" class="btn !min-h-[36px] !px-3 text-sm ${bookingFilter === k ? 'bg-primary text-white' : 'border-2 border-line bg-card text-fg hover:border-primary'}">${l} <span class="opacity-70">${n}</span></button>`).join('')}
+      </div>
+    </div>
+    <div class="space-y-3">
+      ${list.length ? list.map(b => `
+        <article class="card p-4 sm:p-5" data-bk="${esc(b.id)}">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-lg font-bold text-fg">${esc(b.name)}</p>
+              <a href="tel:${esc(b.phone)}" class="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline">${iconSvg('phone', 'h-4 w-4')}${esc(b.phone)}</a>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="sr-only" for="st-${esc(b.id)}">Trạng thái</label>
+              <select id="st-${esc(b.id)}" data-bk-status class="field !min-h-[40px] w-auto cursor-pointer !py-1.5 text-sm font-semibold ${STATUS[b.status]?.c || ''}">
+                ${Object.entries(STATUS).map(([k, s]) => `<option value="${k}" ${b.status === k ? 'selected' : ''}>${s.l}</option>`).join('')}
+              </select>
+              <button type="button" class="btn-icon hover:!text-danger" data-bk-del aria-label="Xoá đơn">${iconSvg('trash')}</button>
+            </div>
+          </div>
+          <dl class="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-[auto_1fr]">
+            <dt class="font-semibold text-fg">Yêu cầu</dt><dd>${bookingWhat(b)}</dd>
+            <dt class="font-semibold text-fg">Địa chỉ</dt><dd>${esc(b.address)}</dd>
+            <dt class="font-semibold text-fg">Thời gian mong muốn</dt><dd>${esc([fmtDate(b.date), b.slot].filter(Boolean).join(' · ') || '—')}</dd>
+            ${b.note ? `<dt class="font-semibold text-fg">Ghi chú KH</dt><dd class="whitespace-pre-line">${esc(b.note)}</dd>` : ''}
+            <dt class="font-semibold text-fg">Đặt lúc</dt><dd>${fmtTime(b.createdAt)} · mã ${esc(b.id)}</dd>
+          </dl>
+          <label class="mt-3 block"><span class="sr-only">Ghi chú nội bộ</span>
+            <textarea data-bk-note rows="1" class="field text-sm" placeholder="Ghi chú nội bộ (tự lưu khi rời ô)…">${esc(b.adminNote)}</textarea></label>
+        </article>`).join('')
+      : `<div class="card p-10 text-center">${iconSvg('inbox', 'mx-auto h-10 w-10 text-slate-400')}<p class="mt-3 font-semibold text-fg">${bookings.length ? 'Không có đơn phù hợp bộ lọc' : 'Chưa có đơn đặt lịch nào'}</p></div>`}
+    </div>`;
+}
+async function updateBooking(id, patch) {
+  try {
+    await api('/api/bookings?id=' + encodeURIComponent(id), { method: 'PATCH', body: patch });
+    Object.assign(bookings.find(b => b.id === id), patch);
+    toast('Đã cập nhật đơn');
+  } catch (e) { toast(e.message, 'err'); }
+}
+panel.addEventListener('click', async e => {
+  if (view !== 'bookings') return;
+  const f = e.target.closest('[data-bk-filter]');
+  if (f) { bookingFilter = f.dataset.bkFilter; renderBookings(); return; }
+  if (e.target.closest('#bkRefresh')) { await loadBookings(); renderBookings(); toast('Đã tải lại'); return; }
+  if (e.target.closest('#bkExport')) return exportCSV();
+  const del = e.target.closest('[data-bk-del]');
+  if (del) {
+    const id = del.closest('[data-bk]').dataset.bk, b = bookings.find(x => x.id === id);
+    if (!confirm(`Xoá vĩnh viễn đơn của ${b.name} (${b.phone})?`)) return;
+    try { await api('/api/bookings?id=' + encodeURIComponent(id), { method: 'DELETE' }); bookings = bookings.filter(x => x.id !== id); renderNav(); renderBookings(); toast('Đã xoá đơn'); }
+    catch (err) { toast(err.message, 'err'); }
+  }
+});
+panel.addEventListener('change', e => {
+  const st = e.target.closest('[data-bk-status]');
+  if (!st) return;
+  updateBooking(st.closest('[data-bk]').dataset.bk, { status: st.value }).then(() => { renderNav(); renderBookings(); });
+});
+panel.addEventListener('focusout', e => {
+  const n = e.target.closest('[data-bk-note]');
+  if (!n) return;
+  const id = n.closest('[data-bk]').dataset.bk;
+  if ((bookings.find(b => b.id === id)?.adminNote || '') !== n.value) updateBooking(id, { adminNote: n.value });
+});
+panel.addEventListener('input', e => {
+  if (e.target.id !== 'bkSearch') return;
+  bookingQuery = e.target.value;
+  const pos = e.target.selectionStart;
+  renderBookings();
+  const s = $('#bkSearch'); s.focus(); s.setSelectionRange(pos, pos);
+});
+function exportCSV() {
+  const cell = v => { let s = String(v ?? ''); if (/^[=+\-@]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
+  const head = ['Mã', 'Đặt lúc', 'Trạng thái', 'Loại', 'Họ tên', 'SĐT', 'Địa chỉ', 'Dịch vụ / Gói', 'Tổng tiền', 'Ngày mong muốn', 'Khung giờ', 'Ghi chú KH', 'Ghi chú nội bộ'];
+  const rows = filteredBookings().map(b => [b.id, fmtTime(b.createdAt), STATUS[b.status]?.l, b.type === 'survey' ? 'Khảo sát' : 'Combo', b.name, b.phone, b.address,
+    b.type === 'survey' ? b.service : b.items.map(i => `${i.name} x${i.qty}`).join('; '), b.total ?? '', fmtDate(b.date), b.slot, b.note, b.adminNote]);
+  const csv = '﻿' + [head, ...rows].map(r => r.map(cell).join(',')).join('\r\n');
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })), download: `don-dat-lich-${new Date().toISOString().slice(0, 10)}.csv` });
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ================== ACCOUNT ================== */
+async function renderAccount() {
+  $('#panel').innerHTML = `
+    <div class="mb-5"><h1 class="text-2xl font-extrabold text-fg">Mật khẩu & sao lưu</h1></div>
+    <form id="pwForm" class="card grid gap-4 p-5 sm:p-6">
+      <h2 class="text-lg font-bold text-fg">Đổi mật khẩu</h2>
+      <div><label class="lbl" for="pwCur">Mật khẩu hiện tại</label><input id="pwCur" type="password" autocomplete="current-password" class="field mt-1.5" required /></div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div><label class="lbl" for="pwNew">Mật khẩu mới</label><input id="pwNew" type="password" autocomplete="new-password" minlength="8" class="field mt-1.5" required /><p class="help mt-1">Tối thiểu 8 ký tự.</p></div>
+        <div><label class="lbl" for="pwNew2">Nhập lại mật khẩu mới</label><input id="pwNew2" type="password" autocomplete="new-password" class="field mt-1.5" required /></div>
+      </div>
+      <div><button class="btn-primary" type="submit">Đổi mật khẩu</button></div>
+    </form>
+    <section class="card mt-6 p-5 sm:p-6">
+      <h2 class="text-lg font-bold text-fg">Bản sao lưu nội dung</h2>
+      <p class="help mt-1">Mỗi lần bấm Lưu, bản cũ được giữ lại (tối đa 30 bản). Khôi phục sẽ thay toàn bộ nội dung hiện tại.</p>
+      <ul id="backupList" class="mt-4 divide-y-2 divide-line"><li class="py-3">Đang tải…</li></ul>
+    </section>`;
+  try {
+    const { items } = await api('/api/backups');
+    $('#backupList').innerHTML = items.length ? items.map(b => `
+      <li class="flex items-center justify-between gap-3 py-3">
+        <span><b class="text-fg">${fmtTime(b.time)}</b> <span class="text-sm">· ${(b.size / 1024).toFixed(1)} KB</span></span>
+        <button type="button" class="btn-outline !min-h-[40px] text-sm" data-restore="${esc(b.id)}">${iconSvg('refresh', 'h-4 w-4')}Khôi phục</button>
+      </li>`).join('') : '<li class="py-3">Chưa có bản sao lưu nào.</li>';
+  } catch (e) { $('#backupList').innerHTML = `<li class="py-3 text-danger">${esc(e.message)}</li>`; }
+}
+panel.addEventListener('submit', async e => {
+  if (e.target.id !== 'pwForm') return;
+  e.preventDefault();
+  const cur = $('#pwCur').value, n1 = $('#pwNew').value, n2 = $('#pwNew2').value;
+  if (n1.length < 8) return toast('Mật khẩu mới cần ít nhất 8 ký tự', 'err');
+  if (n1 !== n2) return toast('Hai mật khẩu mới không khớp', 'err');
+  try { await api('/api/password', { method: 'POST', body: { current: cur, new: n1 } }); e.target.reset(); toast('Đã đổi mật khẩu'); }
+  catch (err) { toast(err.message, 'err'); }
+});
+panel.addEventListener('click', async e => {
+  const r = e.target.closest('[data-restore]');
+  if (!r) return;
+  if (isDirty() && !confirm('Bạn có thay đổi chưa lưu, chúng sẽ bị mất. Tiếp tục?')) return;
+  if (!confirm('Khôi phục nội dung về bản sao lưu này?')) return;
+  try {
+    const res = await api('/api/backups', { method: 'POST', body: { id: r.dataset.restore } });
+    draft = res.content; savedJSON = JSON.stringify(draft); markDirty();
+    toast('Đã khôi phục'); renderAccount();
+  } catch (err) { toast(err.message, 'err'); }
+});
+
+/* ================== AUTH & BOOT ================== */
+function showLogin(hint) {
+  $('#appView').hidden = true; $('#loginView').hidden = false;
+  if (hint) { $('#loginHint').innerHTML = hint; }
+  $('#password').focus();
+}
+async function showApp() {
+  $('#loginView').hidden = true; $('#appView').hidden = false;
+  draft = await api('/api/content');
+  savedJSON = JSON.stringify(draft);
+  await loadBookings();
+  renderNav(); renderPanel(); markDirty();
+}
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#loginError'); err.hidden = true;
+  try { await api('/api/login', { method: 'POST', body: { password: $('#password').value } }); $('#password').value = ''; showApp(); }
+  catch (ex) { err.textContent = ex.message; err.hidden = false; }
+});
+$('#logoutBtn').addEventListener('click', async () => {
+  if (isDirty() && !confirm('Bạn có thay đổi chưa lưu. Vẫn đăng xuất?')) return;
+  await api('/api/logout', { method: 'POST' }).catch(() => {});
+  savedJSON = JSON.stringify(draft); location.reload();
+});
+setInterval(() => { if (!$('#appView').hidden && view === 'bookings' && document.visibilityState === 'visible' && !panel.contains(document.activeElement)) loadBookings().then(renderBookings); }, 60000);
+
+(async () => {
+  hydrateIcons();
+  try {
+    const s = await api('/api/session');
+    if (s.authed) return showApp();
+    if (s.storage === 'none') return showLogin('<span class="text-danger">Chưa kết nối Upstash Redis. Vào Vercel → Storage → tạo Upstash Redis, kết nối với project rồi Redeploy.</span>');
+    showLogin(s.passwordSet ? '' : 'Chưa có mật khẩu admin. Vào Vercel → Settings → Environment Variables, thêm <code class="rounded bg-muted px-1.5 py-0.5 text-fg">ADMIN_PASSWORD</code> (≥ 8 ký tự) rồi Redeploy.');
+  } catch {
+    showLogin('<span class="text-danger">Không kết nối được API. Trên máy, hãy chạy <code>npm run dev</code>.</span>');
+  }
+})();
+</script>
+</body>
+</html>

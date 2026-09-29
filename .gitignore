@@ -1,0 +1,9 @@
+node_modules/
+# dữ liệu khi chạy thử trên máy (đơn đặt lịch, mật khẩu, phiên đăng nhập)
+.local-data/
+# ảnh upload khi chạy thử trên máy (trên Vercel ảnh nằm ở Vercel Blob)
+assets/uploads/
+# biến môi trường / token
+.env*.local
+.vercel
+.DS_Store

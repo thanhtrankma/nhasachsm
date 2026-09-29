@@ -1,0 +1,5 @@
+.claude
+.local-data
+dev-server.mjs
+assets/uploads
+*.local

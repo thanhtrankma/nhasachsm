@@ -1,0 +1,136 @@
+{
+  "seo": {
+    "title": "SạchPro – Vệ sinh công nghiệp & Dịch vụ căn hộ",
+    "description": "Vệ sinh công nghiệp, vệ sinh định kỳ, vận chuyển nội thất và combo khử mùi – khử khuẩn – khử bụi mịn căn hộ. Khảo sát miễn phí, đặt lịch trong 1 phút."
+  },
+  "brand": {
+    "name1": "Sạch",
+    "name2": "Pro",
+    "logo": ""
+  },
+  "contact": {
+    "phone": "0900 000 000",
+    "email": "lienhe@example.com",
+    "address": "Địa chỉ công ty của bạn",
+    "hours": "7:30 – 20:00, Thứ 2 – Chủ nhật"
+  },
+  "promo": {
+    "enabled": true,
+    "text": "Combo khử khuẩn căn hộ giảm tới 48% · Vận chuyển nội thất miễn phí cước xe 3km đầu"
+  },
+  "hero": {
+    "badge": "Khảo sát tận nơi miễn phí · Báo giá minh bạch",
+    "title": "Vệ sinh công nghiệp & chăm sóc căn hộ",
+    "titleHighlight": "trọn gói",
+    "subtitle": "Vệ sinh công nghiệp, vệ sinh định kỳ, vận chuyển nội thất và combo khử mùi – khử khuẩn – khử bụi mịn. Đặt lịch trong 1 phút, nhân viên gọi xác nhận ngay.",
+    "surveyCtaTitle": "Đặt lịch khảo sát",
+    "surveyCtaSub": "Miễn phí · báo giá tận nơi",
+    "comboCtaTitle": "Đặt gói combo",
+    "bullets": [
+      "Không phát sinh chi phí ngoài báo giá",
+      "Dụng cụ & hoá chất chuyên dụng",
+      "Lịch linh hoạt cả cuối tuần",
+      "Gọi xác nhận nhanh sau khi đặt"
+    ],
+    "image": "assets/images/web/doi-ngu-cong-trinh.jpg",
+    "imageAlt": "Nhân viên mặc đồng phục xanh đứng trước công trình biệt thự",
+    "captionTitle": "Đội ngũ tại công trình",
+    "captionText": "Đồng phục, dụng cụ chuyên dụng"
+  },
+  "commitments": [
+    { "icon": "clipboard", "title": "Khảo sát miễn phí", "text": "Đo đạc, đánh giá tận nơi" },
+    { "icon": "receipt", "title": "Báo giá minh bạch", "text": "Chi tiết từng hạng mục" },
+    { "icon": "clock", "title": "Đúng hẹn", "text": "Khung giờ bạn chọn" },
+    { "icon": "shield", "title": "An toàn", "text": "Cho gia đình & thú cưng" }
+  ],
+  "services": {
+    "eyebrow": "Danh mục dịch vụ",
+    "title": "Hai cách đặt lịch, tuỳ nhu cầu của bạn",
+    "group1Title": "Đặt lịch khảo sát – báo giá sau khi xem thực tế",
+    "items": [
+      { "name": "Vệ sinh công nghiệp", "icon": "building", "desc": "Tổng vệ sinh sau xây dựng, trước bàn giao căn hộ, văn phòng. Máy móc chuyên dụng, đội ngũ đông.", "promo": "" },
+      { "name": "Vệ sinh định kỳ", "icon": "calendar", "desc": "Dọn dẹp theo tuần hoặc tháng với checklist rõ ràng, giúp căn hộ luôn sạch sẽ, gọn gàng.", "promo": "" },
+      { "name": "Vận chuyển nội thất căn hộ", "icon": "truck", "desc": "Tháo lắp, đóng gói và vận chuyển đồ đạc cẩn thận khi chuyển nhà.", "promo": "Miễn phí cước xe 3km đầu" }
+    ],
+    "group2Title": "Đặt gói combo trực tiếp – giá cố định",
+    "comboTitle": "Khử mùi · Khử khuẩn · Khử bụi mịn căn hộ",
+    "comboDesc": "Xử lý mùi hôi, ẩm mốc, vi khuẩn và bụi mịn trong không gian sống. Phù hợp nhà mới nhận, nhà có trẻ nhỏ, người già hoặc thú cưng.",
+    "comboFeatures": [
+      { "icon": "wind", "label": "Khử mùi" },
+      { "icon": "spray", "label": "Khử khuẩn" },
+      { "icon": "fan", "label": "Khử bụi mịn" }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "Công trình thực tế",
+    "title": "Trước & sau khi làm sạch",
+    "subtitle": "Hình ảnh chụp tại công trình. Kéo thanh trượt trên ảnh để so sánh.",
+    "ctaTitle": "Căn hộ của bạn cần làm sạch sau thi công?",
+    "ctaText": "Khảo sát tận nơi miễn phí, báo giá rõ ràng từng hạng mục.",
+    "items": [
+      { "label": "Hội trường, sàn đá diện tích lớn", "before": "assets/images/web/hoi-truong-truoc.jpg", "after": "assets/images/web/hoi-truong-sau.jpg", "thumb": "assets/images/web/thumbs/hoi-truong-sau.jpg" },
+      { "label": "Bếp & phòng ăn sau thi công", "before": "assets/images/web/bep-phong-an-truoc.jpg", "after": "assets/images/web/bep-phong-an-sau.jpg", "thumb": "assets/images/web/thumbs/bep-phong-an-sau.jpg" },
+      { "label": "Nhà vệ sinh căn hộ trước bàn giao", "before": "assets/images/web/nha-ve-sinh-1-truoc.jpg", "after": "assets/images/web/nha-ve-sinh-1-sau.jpg", "thumb": "assets/images/web/thumbs/nha-ve-sinh-1-sau.jpg" },
+      { "label": "Hành lang sàn đá – đánh bóng", "before": "assets/images/web/hanh-lang-da-truoc.jpg", "after": "assets/images/web/hanh-lang-da-sau.jpg", "thumb": "assets/images/web/thumbs/hanh-lang-da-sau.jpg" },
+      { "label": "Phòng lát gạch sau sửa chữa", "before": "assets/images/web/phong-gach-caro-truoc.jpg", "after": "assets/images/web/phong-gach-caro-sau.jpg", "thumb": "assets/images/web/thumbs/phong-gach-caro-sau.jpg" },
+      { "label": "Sảnh kính & khu thang máy", "before": "assets/images/web/sanh-kinh-thang-may-truoc.jpg", "after": "assets/images/web/sanh-kinh-thang-may-sau.jpg", "thumb": "assets/images/web/thumbs/sanh-kinh-thang-may-sau.jpg" },
+      { "label": "Cầu thang đá sau xây dựng", "before": "assets/images/web/cau-thang-da-1-truoc.jpg", "after": "assets/images/web/cau-thang-da-1-sau.jpg", "thumb": "assets/images/web/thumbs/cau-thang-da-1-sau.jpg" },
+      { "label": "Phòng ngủ sau thi công", "before": "assets/images/web/phong-ngu-truoc.jpg", "after": "assets/images/web/phong-ngu-sau.jpg", "thumb": "assets/images/web/thumbs/phong-ngu-sau.jpg" },
+      { "label": "Phòng sàn gỗ", "before": "assets/images/web/phong-san-go-truoc.jpg", "after": "assets/images/web/phong-san-go-sau.jpg", "thumb": "assets/images/web/thumbs/phong-san-go-sau.jpg" },
+      { "label": "Phòng tắm căn hộ", "before": "assets/images/web/nha-ve-sinh-2-truoc.jpg", "after": "assets/images/web/nha-ve-sinh-2-sau.jpg", "thumb": "assets/images/web/thumbs/nha-ve-sinh-2-sau.jpg" },
+      { "label": "Cầu thang đá – công trình 2", "before": "assets/images/web/cau-thang-da-2-truoc.jpg", "after": "assets/images/web/cau-thang-da-2-sau.jpg", "thumb": "assets/images/web/thumbs/cau-thang-da-2-sau.jpg" }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Bảng giá & khuyến mãi",
+    "title": "Combo khử mùi – khử khuẩn – khử bụi mịn",
+    "subtitle": "Giá tính theo phòng. Có thể kết hợp nhiều phòng và nhiều gói trong một lần đặt.",
+    "packages": [
+      {
+        "id": "p20",
+        "name": "Phòng dưới 20m²",
+        "desc": "Phòng ngủ, phòng làm việc, phòng trẻ em",
+        "original": 699000,
+        "price": 365000,
+        "popular": false,
+        "features": ["Khử mùi hôi, ẩm mốc", "Khử khuẩn bề mặt & không khí", "Khử bụi mịn", "Đã gồm nhân công & thiết bị"]
+      },
+      {
+        "id": "p50",
+        "name": "Phòng dưới 50m²",
+        "desc": "Phòng khách, phòng khách liền bếp, studio",
+        "original": 1299000,
+        "price": 696000,
+        "popular": true,
+        "features": ["Khử mùi hôi, ẩm mốc", "Khử khuẩn bề mặt & không khí", "Khử bụi mịn", "Đã gồm nhân công & thiết bị"]
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "Quy trình",
+    "title": "Đặt lịch chỉ với 2 bước",
+    "steps": [
+      { "title": "Chọn dịch vụ", "text": "Khảo sát miễn phí hoặc chọn gói combo có giá sẵn." },
+      { "title": "Để lại thông tin", "text": "Họ tên, số điện thoại, địa chỉ căn hộ – vậy là xong." },
+      { "title": "Chúng tôi gọi xác nhận", "text": "Chốt lịch, nhân viên tới đúng giờ và thực hiện." }
+    ]
+  },
+  "booking": {
+    "title": "Đặt lịch trong 1 phút",
+    "slots": ["Linh hoạt", "Sáng (8h – 11h)", "Chiều (13h – 17h)", "Tối (18h – 20h)"],
+    "note": "Nhân viên sẽ gọi lại để xác nhận lịch hẹn."
+  },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "items": [
+      { "q": "Khảo sát có mất phí không?", "a": "Không. Nhân viên tới tận nơi khảo sát và gửi báo giá hoàn toàn miễn phí, bạn quyết định sau khi xem báo giá." },
+      { "q": "Giá combo 3 KHỬ được tính như thế nào?", "a": "Tính theo từng phòng: phòng dưới 20m² giá 365.000đ, phòng dưới 50m² giá 696.000đ. Bạn chọn số phòng mỗi loại trong form, tổng tiền được tính ngay." },
+      { "q": "Ưu đãi miễn phí 3km đầu áp dụng ra sao?", "a": "Với dịch vụ vận chuyển nội thất căn hộ, cước xe cho 3km đầu tiên được miễn phí. Quãng đường còn lại sẽ có trong báo giá sau khảo sát." },
+      { "q": "Phòng rộng hơn 50m² thì sao?", "a": "Bạn hãy chọn “Đặt lịch khảo sát” hoặc ghi chú diện tích trong form, chúng tôi sẽ tư vấn gói phù hợp." }
+    ]
+  },
+  "footer": {
+    "about": "Vệ sinh công nghiệp & chăm sóc căn hộ chuyên nghiệp. Tận tâm – Minh bạch – An toàn.",
+    "copyright": "SạchPro. All rights reserved."
+  }
+}

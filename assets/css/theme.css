@@ -1,0 +1,32 @@
+/* Design tokens (ui-ux-pro-max: "Trust & Authority + Conversion", Flat Design) */
+:root {
+  --color-primary: #1E40AF;       /* trust blue */
+  --color-primary-hover: #1E3A8A;
+  --color-primary-soft: #DBEAFE;
+  --color-secondary: #3B82F6;
+  --color-accent: #C2410C;        /* CTA only – white text 5.2:1 */
+  --color-accent-hover: #9A3412;
+  --color-accent-soft: #FFEDD5;
+  --color-bg: #EFF6FF;
+  --color-card: #FFFFFF;
+  --color-fg: #1E3A8A;
+  --color-muted: #E9EEF6;
+  --color-muted-fg: #475569;
+  --color-border: #BFDBFE;
+  --color-success: #047857;       /* "sạch / an toàn / tiết kiệm" */
+  --color-success-soft: #ECFDF5;
+  --color-destructive: #DC2626;
+}
+html { scroll-behavior: smooth; }
+body { -webkit-tap-highlight-color: transparent; }
+[data-icon] { display: inline-block; flex-shrink: 0; }
+:focus-visible { outline: 3px solid var(--color-secondary); outline-offset: 2px; }
+summary { cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+details[open] > summary .chev { transform: rotate(180deg); }
+.chev { transition: transform .2s ease; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
