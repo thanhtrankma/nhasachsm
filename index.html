@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" id="favicon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" id="touchIcon" href="assets/favicon.svg" />
   <link rel="stylesheet" href="assets/css/theme.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="assets/js/theme.js"></script>
@@ -386,6 +388,10 @@ function brandHTML(onDark = false) {
 function renderContent() {
   const fullName = `${C.brand.name1 || ''}${C.brand.name2 || ''}`;
   document.title = C.seo?.title || fullName;
+  if (C.brand.favicon) {
+    $('#favicon').removeAttribute('type');
+    $('#favicon').href = $('#touchIcon').href = C.brand.favicon;
+  }
   $('meta[name=description]').content = C.seo?.description || '';
 
   $$('[data-t]').forEach(el => { el.textContent = get(C, el.dataset.t) ?? ''; });
