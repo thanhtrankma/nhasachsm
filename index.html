@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SạchPro – Vệ sinh công nghiệp & Dịch vụ căn hộ</title>
+  <meta name="description" content="Vệ sinh công nghiệp, vệ sinh định kỳ, vận chuyển nội thất và combo khử mùi – khử khuẩn – khử bụi mịn căn hộ. Khảo sát miễn phí, đặt lịch trong 1 phút." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Design tokens (ui-ux-pro-max: "Trust & Authority + Conversion", Flat Design)
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'] },
+          colors: {
+            primary:   { DEFAULT: 'var(--color-primary)', hover: 'var(--color-primary-hover)', soft: 'var(--color-primary-soft)' },
+            secondary: 'var(--color-secondary)',
+            accent:    { DEFAULT: 'var(--color-accent)', hover: 'var(--color-accent-hover)', soft: 'var(--color-accent-soft)' },
+            bg:        'var(--color-bg)',
+            card:      'var(--color-card)',
+            fg:        'var(--color-fg)',
+            muted:     { DEFAULT: 'var(--color-muted)', fg: 'var(--color-muted-fg)' },
+            line:      'var(--color-border)',
+            success:   { DEFAULT: 'var(--color-success)', soft: 'var(--color-success-soft)' },
+            danger:    'var(--color-destructive)',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+  @layer components {
+    .field {
+      @apply block min-h-[48px] w-full rounded-lg border-2 border-line bg-card px-4 py-3 text-base text-fg placeholder-slate-500 transition-colors duration-150;
+    }
+    .field:focus { @apply border-primary outline-none; }
+    .field[aria-invalid="true"] { @apply border-danger; }
+    .btn { @apply inline-flex whitespace-nowrap min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors duration-150; }
+    .btn-accent { @apply btn bg-accent text-white hover:bg-accent-hover; }
+    .btn-primary { @apply btn bg-primary text-white hover:bg-primary-hover; }
+    .btn-outline { @apply btn border-2 border-primary bg-card text-primary hover:bg-primary-soft; }
+    .eyebrow { @apply text-sm font-bold uppercase tracking-wider text-primary; }
+  }
+  </style>
+  <style>
+    :root {
+      --color-primary: #1E40AF;       /* trust blue */
+      --color-primary-hover: #1E3A8A;
+      --color-primary-soft: #DBEAFE;
+      --color-secondary: #3B82F6;
+      --color-accent: #C2410C;        /* CTA only – white text 5.2:1 */
+      --color-accent-hover: #9A3412;
+      --color-accent-soft: #FFEDD5;
+      --color-bg: #EFF6FF;
+      --color-card: #FFFFFF;
+      --color-fg: #1E3A8A;
+      --color-muted: #E9EEF6;
+      --color-muted-fg: #475569;
+      --color-border: #BFDBFE;
+      --color-success: #047857;       /* "sạch / an toàn / tiết kiệm" */
+      --color-success-soft: #ECFDF5;
+      --color-destructive: #DC2626;
+    }
+    html { scroll-behavior: smooth; }
+    body { -webkit-tap-highlight-color: transparent; }
+    [data-icon] { display: inline-block; flex-shrink: 0; }
+    :focus-visible { outline: 3px solid var(--color-secondary); outline-offset: 2px; }
+    summary { cursor: pointer; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    details[open] .chev { transform: rotate(180deg); }
+    .chev { transition: transform .2s ease; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+    }
+  </style>
+</head>
+<body class="bg-card font-sans text-base leading-relaxed text-muted-fg antialiased">
+
+<a href="#dat-lich" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-white">Bỏ qua, tới form đặt lịch</a>
+
+<!-- ================= PROMO STRIP ================= -->
+<div class="bg-primary text-white">
+  <p class="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2 text-center text-sm font-medium">
+    <i data-icon="gift" class="h-4 w-4"></i>
+    Combo khử khuẩn căn hộ giảm tới 48% · Vận chuyển nội thất miễn phí cước xe 3km đầu
+  </p>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header id="top" class="sticky top-0 z-40 border-b border-line bg-card">
+  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+    <a href="#top" class="flex items-center gap-2" aria-label="SạchPro – về đầu trang">
+      <span class="grid h-10 w-10 place-items-center rounded-lg bg-primary text-white"><i data-icon="sparkles" class="h-5 w-5"></i></span>
+      <span class="text-xl font-extrabold tracking-tight text-fg">Sạch<span class="text-success">Pro</span></span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Điều hướng chính">
+      <a href="#dich-vu"  class="rounded-lg px-3 py-2 font-medium text-fg transition-colors duration-150 hover:bg-bg">Dịch vụ</a>
+      <a href="#cong-trinh" class="rounded-lg px-3 py-2 font-medium text-fg transition-colors duration-150 hover:bg-bg">Công trình</a>
+      <a href="#bang-gia" class="rounded-lg px-3 py-2 font-medium text-fg transition-colors duration-150 hover:bg-bg">Bảng giá</a>
+      <a href="#quy-trinh" class="rounded-lg px-3 py-2 font-medium text-fg transition-colors duration-150 hover:bg-bg">Quy trình</a>
+      <a href="#hoi-dap"  class="rounded-lg px-3 py-2 font-medium text-fg transition-colors duration-150 hover:bg-bg">Hỏi đáp</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="tel:0900000000" class="hidden items-center gap-2 rounded-lg px-3 py-2 font-bold text-fg transition-colors duration-150 hover:bg-bg lg:inline-flex">
+        <i data-icon="phone" class="h-5 w-5 text-primary"></i> 0900 000 000
+      </a>
+      <a href="#dat-lich" data-open-tab="survey" class="btn-accent hidden !min-h-[44px] !px-5 sm:inline-flex">Đặt lịch ngay</a>
+      <button id="menuBtn" type="button" class="grid h-11 w-11 cursor-pointer place-items-center rounded-lg text-fg hover:bg-bg md:hidden" aria-label="Mở menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-icon="menu" class="h-6 w-6"></i>
+      </button>
+    </div>
+  </div>
+  <nav id="mobileMenu" class="hidden border-t border-line bg-card px-4 pb-4 pt-2 md:hidden" aria-label="Menu di động">
+    <a href="#dich-vu"  class="block rounded-lg px-3 py-3 font-medium text-fg hover:bg-bg">Dịch vụ</a>
+    <a href="#cong-trinh" class="block rounded-lg px-3 py-3 font-medium text-fg hover:bg-bg">Công trình</a>
+    <a href="#bang-gia" class="block rounded-lg px-3 py-3 font-medium text-fg hover:bg-bg">Bảng giá</a>
+    <a href="#quy-trinh" class="block rounded-lg px-3 py-3 font-medium text-fg hover:bg-bg">Quy trình</a>
+    <a href="#hoi-dap"  class="block rounded-lg px-3 py-3 font-medium text-fg hover:bg-bg">Hỏi đáp</a>
+  </nav>
+</header>
+
+<main>
+<!-- ================= HERO ================= -->
+<section class="bg-bg">
+  <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 md:py-20 lg:grid-cols-12">
+    <div class="lg:col-span-7">
+      <p class="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3 py-1 text-sm font-semibold text-primary">
+        <i data-icon="shield" class="h-4 w-4"></i> Khảo sát tận nơi miễn phí · Báo giá minh bạch
+      </p>
+      <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-fg sm:text-5xl lg:text-6xl" style="text-wrap:balance">
+        Vệ sinh công nghiệp & chăm sóc căn hộ <span class="text-success">trọn gói</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-lg">
+        Vệ sinh công nghiệp, vệ sinh định kỳ, vận chuyển nội thất và combo khử mùi – khử khuẩn – khử bụi mịn. Đặt lịch trong 1 phút, nhân viên gọi xác nhận ngay.
+      </p>
+
+      <!-- Quick chooser: 1 click → đúng tab của form -->
+      <div class="mt-8 grid gap-3 sm:grid-cols-2">
+        <a href="#dat-lich" data-open-tab="survey" class="group flex cursor-pointer items-center gap-4 rounded-xl border-2 border-accent bg-accent p-4 text-white transition-colors duration-150 hover:bg-accent-hover">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-white text-accent"><i data-icon="clipboard" class="h-6 w-6"></i></span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-lg font-bold">Đặt lịch khảo sát</span>
+            <span class="block text-sm text-orange-50">Miễn phí · báo giá tận nơi</span>
+          </span>
+          <i data-icon="arrow" class="h-5 w-5"></i>
+        </a>
+        <a href="#dat-lich" data-open-tab="combo" class="group flex cursor-pointer items-center gap-4 rounded-xl border-2 border-primary bg-card p-4 transition-colors duration-150 hover:bg-primary-soft">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-success-soft text-success"><i data-icon="spray" class="h-6 w-6"></i></span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-lg font-bold text-fg">Đặt gói combo</span>
+            <span class="block text-sm">Từ <b class="text-accent">365k</b> <span class="line-through">699k</span> /phòng</span>
+          </span>
+          <i data-icon="arrow" class="h-5 w-5 text-primary"></i>
+        </a>
+      </div>
+
+      <ul class="mt-8 grid gap-3 text-fg sm:grid-cols-2">
+        <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Không phát sinh chi phí ngoài báo giá</li>
+        <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Dụng cụ & hoá chất chuyên dụng</li>
+        <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Lịch linh hoạt cả cuối tuần</li>
+        <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Gọi xác nhận nhanh sau khi đặt</li>
+      </ul>
+    </div>
+
+    <!-- Hero photo -->
+    <figure class="relative lg:col-span-5">
+      <img src="assets/images/web/doi-ngu-cong-trinh.jpg" width="816" height="1100" fetchpriority="high"
+           alt="Nhân viên mặc đồng phục xanh đứng trước công trình biệt thự"
+           class="aspect-[4/3] w-full rounded-2xl border-2 border-line object-cover object-[50%_40%] sm:aspect-[4/5]" />
+      <figcaption class="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-xl bg-card p-3 sm:right-auto">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-success-soft text-success"><i data-icon="shield" class="h-5 w-5"></i></span>
+        <span class="text-sm"><b class="block text-fg">Đội ngũ tại công trình</b>Đồng phục, dụng cụ chuyên dụng</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= TRUST / COMMITMENTS ================= -->
+<section aria-label="Cam kết dịch vụ" class="border-y border-line bg-card">
+  <ul class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 sm:px-6 lg:grid-cols-4">
+    <li class="flex items-start gap-3"><i data-icon="clipboard" class="mt-0.5 h-6 w-6 text-primary"></i><div><p class="font-bold text-fg">Khảo sát miễn phí</p><p class="text-sm">Đo đạc, đánh giá tận nơi</p></div></li>
+    <li class="flex items-start gap-3"><i data-icon="receipt" class="mt-0.5 h-6 w-6 text-primary"></i><div><p class="font-bold text-fg">Báo giá minh bạch</p><p class="text-sm">Chi tiết từng hạng mục</p></div></li>
+    <li class="flex items-start gap-3"><i data-icon="clock" class="mt-0.5 h-6 w-6 text-primary"></i><div><p class="font-bold text-fg">Đúng hẹn</p><p class="text-sm">Khung giờ bạn chọn</p></div></li>
+    <li class="flex items-start gap-3"><i data-icon="shield" class="mt-0.5 h-6 w-6 text-primary"></i><div><p class="font-bold text-fg">An toàn</p><p class="text-sm">Cho gia đình & thú cưng</p></div></li>
+  </ul>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="dich-vu" class="scroll-mt-20 py-16 md:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Danh mục dịch vụ</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Hai cách đặt lịch, tuỳ nhu cầu của bạn</h2>
+    </div>
+
+    <!-- Group 1 -->
+    <div class="mt-10 flex flex-wrap items-center gap-3">
+      <span class="rounded-md bg-primary px-2.5 py-1 text-xs font-bold tracking-wide text-white">NHÓM 1</span>
+      <h3 class="text-xl font-bold text-fg">Đặt lịch khảo sát – báo giá sau khi xem thực tế</h3>
+    </div>
+    <div class="mt-6 grid gap-5 md:grid-cols-3">
+      <article class="flex flex-col rounded-2xl border-2 border-line bg-card p-6 transition-colors duration-150 hover:border-primary">
+        <span class="grid h-12 w-12 place-items-center rounded-lg bg-primary-soft text-primary"><i data-icon="building" class="h-6 w-6"></i></span>
+        <h4 class="mt-5 text-xl font-bold text-fg">Vệ sinh công nghiệp</h4>
+        <p class="mt-2 flex-1">Tổng vệ sinh sau xây dựng, trước bàn giao căn hộ, văn phòng. Máy móc chuyên dụng, đội ngũ đông.</p>
+        <button type="button" data-survey="Vệ sinh công nghiệp" class="btn-outline mt-6 w-full">Đặt lịch khảo sát</button>
+      </article>
+
+      <article class="flex flex-col rounded-2xl border-2 border-line bg-card p-6 transition-colors duration-150 hover:border-primary">
+        <span class="grid h-12 w-12 place-items-center rounded-lg bg-primary-soft text-primary"><i data-icon="calendar" class="h-6 w-6"></i></span>
+        <h4 class="mt-5 text-xl font-bold text-fg">Vệ sinh định kỳ</h4>
+        <p class="mt-2 flex-1">Dọn dẹp theo tuần hoặc tháng với checklist rõ ràng, giúp căn hộ luôn sạch sẽ, gọn gàng.</p>
+        <button type="button" data-survey="Vệ sinh định kỳ" class="btn-outline mt-6 w-full">Đặt lịch khảo sát</button>
+      </article>
+
+      <article class="flex flex-col rounded-2xl border-2 border-line bg-card p-6 transition-colors duration-150 hover:border-primary">
+        <div class="flex items-start justify-between gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-lg bg-primary-soft text-primary"><i data-icon="truck" class="h-6 w-6"></i></span>
+          <span class="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">ƯU ĐÃI</span>
+        </div>
+        <h4 class="mt-5 text-xl font-bold text-fg">Vận chuyển nội thất căn hộ</h4>
+        <p class="mt-2 flex-1">Tháo lắp, đóng gói và vận chuyển đồ đạc cẩn thận khi chuyển nhà.</p>
+        <p class="mt-4 flex items-center gap-2 rounded-lg border-2 border-dashed border-accent bg-accent-soft px-3 py-2.5 font-semibold text-accent-hover">
+          <i data-icon="gift" class="h-5 w-5"></i> Miễn phí cước xe 3km đầu
+        </p>
+        <button type="button" data-survey="Vận chuyển nội thất căn hộ" class="btn-outline mt-6 w-full">Đặt lịch khảo sát</button>
+      </article>
+    </div>
+
+    <!-- Group 2 -->
+    <div class="mt-14 flex flex-wrap items-center gap-3">
+      <span class="rounded-md bg-success px-2.5 py-1 text-xs font-bold tracking-wide text-white">NHÓM 2</span>
+      <h3 class="text-xl font-bold text-fg">Đặt gói combo trực tiếp – giá cố định</h3>
+    </div>
+    <div class="mt-6 grid gap-6 rounded-2xl border-2 border-success bg-success-soft p-6 md:grid-cols-12 md:p-10">
+      <div class="md:col-span-8">
+        <h4 class="text-2xl font-extrabold text-fg">Khử mùi · Khử khuẩn · Khử bụi mịn căn hộ</h4>
+        <p class="mt-3 text-slate-700">Xử lý mùi hôi, ẩm mốc, vi khuẩn và bụi mịn trong không gian sống. Phù hợp nhà mới nhận, nhà có trẻ nhỏ, người già hoặc thú cưng.</p>
+        <ul class="mt-6 grid gap-3 sm:grid-cols-3">
+          <li class="flex items-center gap-3 rounded-lg bg-card p-3 font-semibold text-fg"><i data-icon="wind" class="h-6 w-6 text-success"></i>Khử mùi</li>
+          <li class="flex items-center gap-3 rounded-lg bg-card p-3 font-semibold text-fg"><i data-icon="spray" class="h-6 w-6 text-success"></i>Khử khuẩn</li>
+          <li class="flex items-center gap-3 rounded-lg bg-card p-3 font-semibold text-fg"><i data-icon="fan" class="h-6 w-6 text-success"></i>Khử bụi mịn</li>
+        </ul>
+      </div>
+      <div class="flex flex-col justify-center rounded-xl bg-card p-6 text-center md:col-span-4">
+        <p class="text-sm font-semibold text-muted-fg">Chỉ từ</p>
+        <p class="text-4xl font-extrabold text-fg">365.000đ</p>
+        <p class="text-sm"><span class="line-through">699.000đ</span> / phòng</p>
+        <a href="#bang-gia" class="btn-primary mt-5">Xem bảng giá</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BEFORE / AFTER ================= -->
+<section id="cong-trinh" class="scroll-mt-20 border-t border-line py-16 md:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Công trình thực tế</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Trước & sau khi làm sạch</h2>
+      <p class="mt-4">Hình ảnh chụp tại công trình. Kéo thanh trượt trên ảnh để so sánh.</p>
+    </div>
+
+    <div class="mt-10 grid gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <div id="ba" class="relative aspect-[66/57] cursor-ew-resize select-none overflow-hidden rounded-2xl border-2 border-line bg-muted focus-within:outline focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-secondary" style="touch-action:pan-y">
+          <img id="baAfter" class="absolute inset-0 h-full w-full object-cover" width="660" height="570" alt="" draggable="false" />
+          <div id="baBeforeWrap" class="absolute inset-0" style="clip-path:inset(0 50% 0 0)">
+            <img id="baBefore" class="h-full w-full object-cover" width="660" height="570" alt="" draggable="false" />
+          </div>
+          <div id="baHandle" class="pointer-events-none absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 bg-white">
+            <span class="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-primary bg-white text-primary"><i data-icon="drag" class="h-5 w-5"></i></span>
+          </div>
+          <span class="pointer-events-none absolute left-3 top-3 rounded-md bg-fg px-2.5 py-1 text-xs font-bold tracking-wide text-white">TRƯỚC</span>
+          <span class="pointer-events-none absolute right-3 top-3 rounded-md bg-success px-2.5 py-1 text-xs font-bold tracking-wide text-white">SAU</span>
+          <input id="baRange" type="range" min="0" max="100" value="50" class="sr-only" aria-label="So sánh ảnh trước và sau: kéo hoặc dùng phím mũi tên" />
+        </div>
+        <p id="baCaption" class="mt-3 flex items-center gap-2 font-semibold text-fg" aria-live="polite"></p>
+      </div>
+
+      <div class="lg:col-span-4">
+        <p class="font-bold text-fg">Chọn công trình</p>
+        <div id="baThumbs" class="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-3" role="list"></div>
+        <div class="mt-6 rounded-2xl border-2 border-line bg-bg p-5">
+          <p class="text-lg font-bold text-fg">Căn hộ của bạn cần làm sạch sau thi công?</p>
+          <p class="mt-1 text-sm">Khảo sát tận nơi miễn phí, báo giá rõ ràng từng hạng mục.</p>
+          <button type="button" data-survey="Vệ sinh công nghiệp" class="btn-accent mt-4 w-full">Đặt lịch khảo sát</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="bang-gia" class="scroll-mt-20 bg-bg py-16 md:py-24">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">Bảng giá & khuyến mãi</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Combo khử mùi – khử khuẩn – khử bụi mịn</h2>
+      <p class="mt-4">Giá tính theo phòng. Có thể kết hợp nhiều phòng và nhiều gói trong một lần đặt.</p>
+    </div>
+    <div class="mt-12 grid gap-6 md:grid-cols-2" id="pricingCards"></div>
+  </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section id="quy-trinh" class="scroll-mt-20 py-16 md:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">Quy trình</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Đặt lịch chỉ với 2 bước</h2>
+    </div>
+    <ol class="mt-12 grid gap-5 md:grid-cols-3">
+      <li class="rounded-2xl border-2 border-line p-6">
+        <span class="grid h-11 w-11 place-items-center rounded-full bg-primary text-lg font-bold text-white">1</span>
+        <p class="mt-4 text-lg font-bold text-fg">Chọn dịch vụ</p>
+        <p class="mt-1">Khảo sát miễn phí hoặc chọn gói combo có giá sẵn.</p>
+      </li>
+      <li class="rounded-2xl border-2 border-line p-6">
+        <span class="grid h-11 w-11 place-items-center rounded-full bg-primary text-lg font-bold text-white">2</span>
+        <p class="mt-4 text-lg font-bold text-fg">Để lại thông tin</p>
+        <p class="mt-1">Họ tên, số điện thoại, địa chỉ căn hộ – vậy là xong.</p>
+      </li>
+      <li class="rounded-2xl border-2 border-success bg-success-soft p-6">
+        <span class="grid h-11 w-11 place-items-center rounded-full bg-success text-white"><i data-icon="check" class="h-6 w-6"></i></span>
+        <p class="mt-4 text-lg font-bold text-fg">Chúng tôi gọi xác nhận</p>
+        <p class="mt-1 text-slate-700">Chốt lịch, nhân viên tới đúng giờ và thực hiện.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= BOOKING FORM ================= -->
+<section id="dat-lich" class="scroll-mt-20 bg-bg py-16 md:py-24">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">Đặt lịch</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Đặt lịch trong 1 phút</h2>
+    </div>
+
+    <div class="mx-auto mt-8 grid max-w-lg grid-cols-2 gap-1 rounded-xl border-2 border-line bg-card p-1" role="tablist" aria-label="Loại đặt lịch">
+      <button type="button" id="tab-survey" data-tab="survey" role="tab" aria-controls="bookingForm" class="tab-btn flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-lg px-3 font-semibold transition-colors duration-150">
+        <i data-icon="clipboard" class="h-5 w-5"></i> Khảo sát
+      </button>
+      <button type="button" id="tab-combo" data-tab="combo" role="tab" aria-controls="bookingForm" class="tab-btn flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-lg px-3 font-semibold transition-colors duration-150">
+        <i data-icon="spray" class="h-5 w-5"></i> Gói combo
+      </button>
+    </div>
+
+    <form id="bookingForm" novalidate class="mt-8 grid gap-6 lg:grid-cols-12" role="tabpanel">
+      <div class="rounded-2xl border-2 border-line bg-card p-5 sm:p-8 lg:col-span-7">
+        <fieldset data-pane="survey">
+          <legend class="mb-3 text-lg font-bold text-fg">1. Chọn dịch vụ cần khảo sát</legend>
+          <div class="grid gap-3 sm:grid-cols-3" id="surveyOptions"></div>
+          <p id="movingPromo" class="mt-3 hidden items-center gap-2 rounded-lg bg-accent-soft px-4 py-3 font-medium text-accent-hover">
+            <i data-icon="gift" class="h-5 w-5"></i><span>Ưu đãi <b>miễn phí cước xe 3km đầu</b> được áp dụng tự động.</span>
+          </p>
+        </fieldset>
+
+        <fieldset data-pane="combo" class="hidden">
+          <legend class="mb-3 text-lg font-bold text-fg">1. Chọn gói & số phòng</legend>
+          <div class="space-y-3" id="comboOptions"></div>
+          <p id="comboError" class="mt-2 hidden items-center gap-1 text-sm font-medium text-danger" role="alert"><i data-icon="alert" class="h-4 w-4"></i>Vui lòng chọn ít nhất 1 phòng.</p>
+        </fieldset>
+
+        <p class="mb-3 mt-8 text-lg font-bold text-fg">2. Thông tin liên hệ</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="f-name" class="mb-1.5 block font-semibold text-fg">Họ và tên <span class="text-danger" aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" autocomplete="name" required class="field" aria-describedby="e-name" />
+            <p id="e-name" class="err mt-1 hidden text-sm font-medium text-danger">Vui lòng nhập họ tên.</p>
+          </div>
+          <div>
+            <label for="f-phone" class="mb-1.5 block font-semibold text-fg">Số điện thoại <span class="text-danger" aria-hidden="true">*</span></label>
+            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required class="field" placeholder="VD: 0912 345 678" aria-describedby="e-phone" />
+            <p id="e-phone" class="err mt-1 hidden text-sm font-medium text-danger">Số điện thoại chưa đúng (10 số, bắt đầu bằng 03/05/07/08/09).</p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="f-address" class="mb-1.5 block font-semibold text-fg">Địa chỉ căn hộ <span class="text-danger" aria-hidden="true">*</span></label>
+            <input id="f-address" name="address" autocomplete="street-address" required class="field" placeholder="Số căn, toà nhà, đường, quận/huyện" aria-describedby="e-address" />
+            <p id="e-address" class="err mt-1 hidden text-sm font-medium text-danger">Vui lòng nhập địa chỉ căn hộ.</p>
+          </div>
+        </div>
+
+        <details class="group mt-5 rounded-lg border-2 border-line">
+          <summary class="flex min-h-[48px] items-center justify-between px-4 font-semibold text-fg">
+            Thêm ngày giờ & ghi chú (không bắt buộc)
+            <i data-icon="chevron" class="chev h-5 w-5"></i>
+          </summary>
+          <div class="grid gap-4 border-t-2 border-line p-4 sm:grid-cols-2">
+            <div>
+              <label for="f-date" class="mb-1.5 block font-semibold text-fg">Ngày mong muốn</label>
+              <input id="f-date" name="date" type="date" class="field" />
+            </div>
+            <div>
+              <label for="f-slot" class="mb-1.5 block font-semibold text-fg">Khung giờ</label>
+              <select id="f-slot" name="slot" class="field cursor-pointer">
+                <option>Linh hoạt</option>
+                <option>Sáng (8h – 11h)</option>
+                <option>Chiều (13h – 17h)</option>
+                <option>Tối (18h – 20h)</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="f-note" class="mb-1.5 block font-semibold text-fg">Ghi chú</label>
+              <textarea id="f-note" name="note" rows="3" class="field" placeholder="Diện tích, tình trạng căn hộ, yêu cầu thêm…"></textarea>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <aside class="lg:col-span-5">
+        <div class="rounded-2xl bg-primary p-5 text-white sm:p-8 lg:sticky lg:top-24">
+          <p class="text-sm font-bold uppercase tracking-wider text-blue-100">Tóm tắt</p>
+          <div id="summary" class="mt-4" aria-live="polite"></div>
+          <button type="submit" id="submitBtn" class="btn mt-6 w-full bg-accent text-lg text-white hover:bg-accent-hover disabled:cursor-wait disabled:opacity-70">
+            Xác nhận đặt lịch
+          </button>
+          <p class="mt-3 text-center text-sm text-blue-100">Nhân viên sẽ gọi lại để xác nhận lịch hẹn.</p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="hoi-dap" class="scroll-mt-20 py-16 md:py-24">
+  <div class="mx-auto max-w-3xl px-4 sm:px-6">
+    <div class="text-center">
+      <p class="eyebrow">Hỏi đáp</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-fg sm:text-4xl">Câu hỏi thường gặp</h2>
+    </div>
+    <div class="mt-10 space-y-3">
+      <details class="rounded-xl border-2 border-line">
+        <summary class="flex min-h-[56px] items-center justify-between gap-4 px-5 py-3 font-semibold text-fg">Khảo sát có mất phí không?<i data-icon="chevron" class="chev h-5 w-5"></i></summary>
+        <p class="px-5 pb-5">Không. Nhân viên tới tận nơi khảo sát và gửi báo giá hoàn toàn miễn phí, bạn quyết định sau khi xem báo giá.</p>
+      </details>
+      <details class="rounded-xl border-2 border-line">
+        <summary class="flex min-h-[56px] items-center justify-between gap-4 px-5 py-3 font-semibold text-fg">Giá combo 3 KHỬ được tính như thế nào?<i data-icon="chevron" class="chev h-5 w-5"></i></summary>
+        <p class="px-5 pb-5">Tính theo từng phòng: phòng dưới 20m² giá 365.000đ, phòng dưới 50m² giá 696.000đ. Bạn chọn số phòng mỗi loại trong form, tổng tiền được tính ngay.</p>
+      </details>
+      <details class="rounded-xl border-2 border-line">
+        <summary class="flex min-h-[56px] items-center justify-between gap-4 px-5 py-3 font-semibold text-fg">Ưu đãi miễn phí 3km đầu áp dụng ra sao?<i data-icon="chevron" class="chev h-5 w-5"></i></summary>
+        <p class="px-5 pb-5">Với dịch vụ vận chuyển nội thất căn hộ, cước xe cho 3km đầu tiên được miễn phí. Quãng đường còn lại sẽ có trong báo giá sau khảo sát.</p>
+      </details>
+      <details class="rounded-xl border-2 border-line">
+        <summary class="flex min-h-[56px] items-center justify-between gap-4 px-5 py-3 font-semibold text-fg">Phòng rộng hơn 50m² thì sao?<i data-icon="chevron" class="chev h-5 w-5"></i></summary>
+        <p class="px-5 pb-5">Bạn hãy chọn “Đặt lịch khảo sát” hoặc ghi chú diện tích trong form, chúng tôi sẽ tư vấn gói phù hợp.</p>
+      </details>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-fg text-blue-100">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <p class="flex items-center gap-2 text-xl font-extrabold text-white">
+        <span class="grid h-10 w-10 place-items-center rounded-lg bg-card text-primary"><i data-icon="sparkles" class="h-5 w-5"></i></span>
+        SạchPro
+      </p>
+      <p class="mt-4 max-w-sm">Vệ sinh công nghiệp & chăm sóc căn hộ chuyên nghiệp. Tận tâm – Minh bạch – An toàn.</p>
+    </div>
+    <nav class="md:col-span-3" aria-label="Dịch vụ">
+      <p class="font-bold text-white">Dịch vụ</p>
+      <ul class="mt-4 space-y-2">
+        <li><a href="#dich-vu" class="hover:text-white hover:underline">Vệ sinh công nghiệp</a></li>
+        <li><a href="#dich-vu" class="hover:text-white hover:underline">Vệ sinh định kỳ</a></li>
+        <li><a href="#dich-vu" class="hover:text-white hover:underline">Vận chuyển nội thất</a></li>
+        <li><a href="#bang-gia" class="hover:text-white hover:underline">Combo khử khuẩn</a></li>
+      </ul>
+    </nav>
+    <div class="md:col-span-4">
+      <p class="font-bold text-white">Liên hệ</p>
+      <ul class="mt-4 space-y-3">
+        <li class="flex items-center gap-3"><i data-icon="phone" class="h-5 w-5"></i><a href="tel:0900000000" class="hover:text-white hover:underline">0900 000 000</a></li>
+        <li class="flex items-center gap-3"><i data-icon="mail" class="h-5 w-5"></i><a href="mailto:lienhe@example.com" class="hover:text-white hover:underline">lienhe@example.com</a></li>
+        <li class="flex items-center gap-3"><i data-icon="pin" class="h-5 w-5"></i>Địa chỉ công ty của bạn</li>
+        <li class="flex items-center gap-3"><i data-icon="clock" class="h-5 w-5"></i>7:30 – 20:00, Thứ 2 – Chủ nhật</li>
+      </ul>
+    </div>
+  </div>
+  <p class="border-t border-blue-800 px-4 py-5 text-center text-sm">© <span id="year"></span> SạchPro. All rights reserved.</p>
+</footer>
+
+<!-- Mobile sticky CTA (ẩn khi form đang hiển thị) -->
+<div id="mobileBar" class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 border-t border-line bg-card p-3 transition-transform duration-200 md:hidden" style="padding-bottom:max(.75rem,env(safe-area-inset-bottom))">
+  <a href="tel:0900000000" class="btn-outline !px-3"><i data-icon="phone" class="h-5 w-5"></i>Gọi ngay</a>
+  <a href="#dat-lich" data-open-tab="survey" class="btn-accent !px-3">Đặt lịch</a>
+</div>
+<div class="h-20 md:hidden" aria-hidden="true"></div>
+
+<!-- Success dialog -->
+<div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-900/60 p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="w-full max-w-md rounded-2xl bg-card p-6 sm:p-8">
+    <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-success-soft text-success"><i data-icon="check" class="h-8 w-8"></i></span>
+    <h3 id="mTitle" class="mt-4 text-center text-2xl font-extrabold text-fg">Đặt lịch thành công!</h3>
+    <p class="mt-2 text-center">Cảm ơn <b id="mName" class="text-fg"></b>. Chúng tôi sẽ gọi tới <b id="mPhone" class="text-fg"></b> để xác nhận.</p>
+    <div id="mDetail" class="mt-5 space-y-1 rounded-xl bg-bg p-4 text-sm text-fg"></div>
+    <button id="modalClose" type="button" class="btn-primary mt-6 w-full">Đóng</button>
+  </div>
+</div>
+
+<script>
+/* ================== ICONS (Lucide, MIT) ================== */
+const ICONS = {
+  sparkles: '<path d="M9.94 14.06 8 20l-1.94-5.94L0 12l6.06-1.94L8 4l1.94 6.06L16 12z" transform="translate(2 -1) scale(.9)"/><path d="M20 3v4M22 5h-4"/>',
+  phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  close: '<path d="M18 6 6 18M6 6l12 12"/>',
+  arrow: '<path d="M5 12h14M12 5l7 7-7 7"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  clipboard: '<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  receipt: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  building: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/>',
+  truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  spray: '<path d="M3 3h.01M7 5h.01M11 7h.01M3 7h.01M7 9h.01M3 11h.01"/><rect width="4" height="4" x="15" y="5"/><path d="m19 9 2 2v10c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1V11l2-2M13 14l8-2M13 19l8-2"/>',
+  wind: '<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2"/>',
+  fan: '<path d="M10.83 16.38a6.08 6.08 0 0 1-8.62-7l5.41 1.45a6.08 6.08 0 0 1 7-8.62l-1.45 5.41a6.08 6.08 0 0 1 8.62 7l-5.41-1.45a6.08 6.08 0 0 1-7 8.62l1.45-5.41Z"/><path d="M12 12v.01"/>',
+  chevron: '<path d="m6 9 6 6 6-6"/>',
+  mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  pin: '<path d="M20 10c0 5-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  minus: '<path d="M5 12h14"/>',
+  plus: '<path d="M5 12h14M12 5v14"/>',
+  drag: '<path d="m9 18-6-6 6-6M15 6l6 6-6 6"/>',
+  alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+};
+function hydrateIcons(root = document) {
+  root.querySelectorAll('i[data-icon]:not([data-done])').forEach(el => {
+    el.outerHTML = `<svg data-icon data-done class="${el.className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[el.dataset.icon] || ''}</svg>`;
+  });
+}
+
+/* ================== DATA ================== */
+const SURVEY_SERVICES = [
+  { id: 'Vệ sinh công nghiệp',        icon: 'building' },
+  { id: 'Vệ sinh định kỳ',            icon: 'calendar' },
+  { id: 'Vận chuyển nội thất căn hộ', icon: 'truck', promo: 'Miễn phí cước xe 3km đầu' },
+];
+const PACKAGES = [
+  { id: 'p20', name: 'Phòng dưới 20m²', desc: 'Phòng ngủ, phòng làm việc, phòng trẻ em', original: 699000, price: 365000 },
+  { id: 'p50', name: 'Phòng dưới 50m²', desc: 'Phòng khách, phòng khách liền bếp, studio', original: 1299000, price: 696000, popular: true },
+];
+
+/* ================== STATE ================== */
+const state = { tab: 'survey', service: SURVEY_SERVICES[0].id, qty: { p20: 0, p50: 0 } };
+
+/* ================== HELPERS ================== */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const vnd = n => n.toLocaleString('vi-VN') + 'đ';
+const pct = p => Math.round((1 - p.price / p.original) * 100);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const PHONE_RE = /^(0|\+?84)(3|5|7|8|9)\d{8}$/;
+
+/* ================== PRICING CARDS ================== */
+$('#pricingCards').innerHTML = PACKAGES.map(p => `
+  <article class="relative flex flex-col rounded-2xl border-2 bg-card p-6 sm:p-8 ${p.popular ? 'border-primary' : 'border-line'}">
+    ${p.popular ? '<span class="absolute -top-3.5 left-6 rounded-md bg-primary px-3 py-1 text-xs font-bold tracking-wide text-white">PHỔ BIẾN NHẤT</span>' : ''}
+    <div class="flex items-start justify-between gap-3">
+      <div><h3 class="text-xl font-bold text-fg">Gói ${esc(p.name)}</h3><p class="mt-1 text-sm">${esc(p.desc)}</p></div>
+      <span class="shrink-0 rounded-md bg-accent-soft px-2.5 py-1 text-sm font-bold text-accent-hover">−${pct(p)}%</span>
+    </div>
+    <div class="mt-6">
+      <p class="line-through">${vnd(p.original)}</p>
+      <p class="text-4xl font-extrabold text-fg">${vnd(p.price)}<span class="text-base font-medium text-muted-fg"> /phòng</span></p>
+      <p class="mt-1 font-semibold text-success">Tiết kiệm ${vnd(p.original - p.price)} mỗi phòng</p>
+    </div>
+    <ul class="mt-6 flex-1 space-y-2.5 border-t-2 border-line pt-6 text-fg">
+      <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Khử mùi hôi, ẩm mốc</li>
+      <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Khử khuẩn bề mặt & không khí</li>
+      <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Khử bụi mịn</li>
+      <li class="flex items-center gap-2"><i data-icon="check" class="h-5 w-5 text-success"></i>Đã gồm nhân công & thiết bị</li>
+    </ul>
+    <button type="button" data-pick="${p.id}" class="${p.popular ? 'btn-accent' : 'btn-outline'} mt-8 w-full">Chọn gói này</button>
+  </article>`).join('');
+
+/* ================== FORM RENDERING ================== */
+function renderSurveyOptions() {
+  $('#surveyOptions').innerHTML = SURVEY_SERVICES.map((s, i) => {
+    const on = s.id === state.service;
+    return `<label for="svc-${i}" class="flex min-h-[64px] cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-colors duration-150 ${on ? 'border-primary bg-primary-soft' : 'border-line hover:border-secondary'}">
+      <input id="svc-${i}" type="radio" name="service" value="${esc(s.id)}" class="sr-only" ${on ? 'checked' : ''}/>
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg ${on ? 'bg-primary text-white' : 'bg-bg text-primary'}"><i data-icon="${s.icon}" class="h-5 w-5"></i></span>
+      <span class="text-sm font-semibold leading-snug text-fg">${esc(s.id)}</span>
+    </label>`;
+  }).join('');
+  const promo = SURVEY_SERVICES.find(s => s.id === state.service).promo;
+  $('#movingPromo').classList.toggle('hidden', !promo);
+  $('#movingPromo').classList.toggle('flex', !!promo);
+  hydrateIcons($('#surveyOptions'));
+}
+
+function renderComboOptions() {
+  $('#comboOptions').innerHTML = PACKAGES.map(p => {
+    const q = state.qty[p.id], on = q > 0;
+    return `<div class="flex items-center justify-between gap-3 rounded-xl border-2 p-4 transition-colors duration-150 ${on ? 'border-success bg-success-soft' : 'border-line'}">
+      <div class="min-w-0">
+        <p class="font-bold text-fg">${esc(p.name)}</p>
+        <p class="text-sm"><b class="text-accent">${vnd(p.price)}</b> <span class="line-through">${vnd(p.original)}</span></p>
+      </div>
+      <div class="flex shrink-0 items-center rounded-lg border-2 border-line bg-card" role="group" aria-label="Số phòng ${esc(p.name)}">
+        <button type="button" data-step="${p.id}" data-d="-1" class="grid h-11 w-11 cursor-pointer place-items-center text-fg hover:bg-bg disabled:cursor-not-allowed disabled:opacity-30" ${q === 0 ? 'disabled' : ''} aria-label="Bớt 1 ${esc(p.name)}"><i data-icon="minus" class="h-5 w-5"></i></button>
+        <output class="w-9 text-center text-lg font-bold tabular-nums text-fg" aria-live="polite">${q}</output>
+        <button type="button" data-step="${p.id}" data-d="1" class="grid h-11 w-11 cursor-pointer place-items-center text-fg hover:bg-bg" aria-label="Thêm 1 ${esc(p.name)}"><i data-icon="plus" class="h-5 w-5"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+  hydrateIcons($('#comboOptions'));
+}
+
+function calcCombo() {
+  let rooms = 0, original = 0, total = 0;
+  const lines = PACKAGES.filter(p => state.qty[p.id] > 0).map(p => {
+    const q = state.qty[p.id];
+    rooms += q; original += q * p.original; total += q * p.price;
+    return { ...p, q, sub: q * p.price };
+  });
+  return { lines, rooms, original, total, saved: original - total };
+}
+
+function renderSummary() {
+  const box = $('#summary'), btn = $('#submitBtn');
+  if (state.tab === 'survey') {
+    const svc = SURVEY_SERVICES.find(s => s.id === state.service);
+    box.innerHTML = `
+      <p class="text-sm text-blue-100">Dịch vụ khảo sát</p>
+      <p class="mt-1 flex items-center gap-2 text-xl font-bold"><i data-icon="${svc.icon}" class="h-6 w-6"></i>${esc(svc.id)}</p>
+      <div class="mt-5 flex items-center justify-between border-t border-blue-400 pt-4">
+        <span>Phí khảo sát</span><span class="rounded-md bg-card px-3 py-1 font-extrabold text-success">MIỄN PHÍ</span>
+      </div>
+      ${svc.promo ? `<p class="mt-4 flex items-center gap-2 rounded-lg bg-card px-3 py-2.5 text-sm font-semibold text-accent-hover"><i data-icon="gift" class="h-5 w-5"></i>${esc(svc.promo)}</p>` : ''}
+      <p class="mt-4 text-sm text-blue-100">Báo giá chi tiết sau khi khảo sát thực tế.</p>`;
+    btn.textContent = 'Đặt lịch khảo sát';
+  } else {
+    const c = calcCombo();
+    btn.textContent = c.rooms ? `Đặt gói · ${vnd(c.total)}` : 'Xác nhận đặt gói';
+    box.innerHTML = !c.rooms
+      ? `<p class="rounded-lg border-2 border-dashed border-blue-400 px-4 py-6 text-center text-blue-100">Chưa chọn phòng nào.<br/>Bấm nút <b class="text-white">+</b> để thêm phòng.</p>`
+      : `<div class="space-y-2">
+          ${c.lines.map(l => `<div class="flex justify-between gap-2"><span class="text-blue-100">${esc(l.name)} × ${l.q}</span><span class="font-semibold tabular-nums">${vnd(l.sub)}</span></div>`).join('')}
+          <div class="flex justify-between border-t border-blue-400 pt-3 text-sm text-blue-100"><span>Giá gốc</span><span class="line-through tabular-nums">${vnd(c.original)}</span></div>
+          <div class="flex justify-between text-sm"><span class="text-blue-100">Ưu đãi</span><span class="font-semibold tabular-nums">−${vnd(c.saved)}</span></div>
+          <div class="flex items-end justify-between border-t border-blue-400 pt-3">
+            <span>Tổng · ${c.rooms} phòng</span>
+            <span class="text-3xl font-extrabold tabular-nums">${vnd(c.total)}</span>
+          </div>
+          <p class="mt-2 rounded-lg bg-card px-3 py-2.5 text-center font-semibold text-success">Bạn tiết kiệm ${vnd(c.saved)}</p>
+        </div>`;
+  }
+  hydrateIcons(box);
+}
+
+function renderAll() {
+  $$('.tab-btn').forEach(b => {
+    const on = b.dataset.tab === state.tab;
+    b.setAttribute('aria-selected', on);
+    b.tabIndex = on ? 0 : -1;
+    b.classList.toggle('bg-primary', on);
+    b.classList.toggle('text-white', on);
+    b.classList.toggle('text-fg', !on);
+    b.classList.toggle('hover:bg-bg', !on);
+  });
+  $('#bookingForm').setAttribute('aria-labelledby', 'tab-' + state.tab);
+  $$('[data-pane]').forEach(p => p.classList.toggle('hidden', p.dataset.pane !== state.tab));
+  renderSurveyOptions();
+  renderComboOptions();
+  renderSummary();
+}
+
+/* ================== INTERACTIONS ================== */
+function goToForm(tab, patch = {}) {
+  state.tab = tab;
+  Object.assign(state, patch);
+  renderAll();
+  closeMenu();
+  $('#dat-lich').scrollIntoView();
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-open-tab],[data-survey],[data-pick],[data-tab],[data-step]');
+  if (!t) return;
+  if (t.dataset.openTab) { e.preventDefault(); goToForm(t.dataset.openTab); }
+  else if (t.dataset.survey) goToForm('survey', { service: t.dataset.survey });
+  else if (t.dataset.pick) { if (!state.qty[t.dataset.pick]) state.qty[t.dataset.pick] = 1; goToForm('combo'); }
+  else if (t.dataset.tab) { state.tab = t.dataset.tab; renderAll(); }
+  else if (t.dataset.step) {
+    const id = t.dataset.step, d = Number(t.dataset.d);
+    state.qty[id] = Math.max(0, Math.min(20, state.qty[id] + d));
+    $('#comboError').classList.add('hidden');
+    renderComboOptions(); renderSummary();
+    $(`[data-step="${id}"][data-d="${d}"]`)?.focus(); // giữ focus sau khi re-render
+  }
+});
+
+// Arrow keys between tabs (WAI-ARIA tabs pattern)
+$('[role=tablist]').addEventListener('keydown', e => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  state.tab = state.tab === 'survey' ? 'combo' : 'survey';
+  renderAll();
+  $('#tab-' + state.tab).focus();
+});
+
+$('#surveyOptions').addEventListener('change', e => {
+  if (e.target.name !== 'service') return;
+  state.service = e.target.value;
+  const idx = e.target.id;
+  renderSurveyOptions(); renderSummary();
+  document.getElementById(idx)?.focus();
+});
+
+const menuBtn = $('#menuBtn'), menu = $('#mobileMenu');
+function closeMenu() { menu.classList.add('hidden'); menuBtn.setAttribute('aria-expanded', 'false'); }
+menuBtn.addEventListener('click', () => {
+  const open = menu.classList.toggle('hidden') === false;
+  menuBtn.setAttribute('aria-expanded', open);
+});
+menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+
+// Hide mobile CTA bar while the booking section is on screen
+new IntersectionObserver(([en]) => {
+  $('#mobileBar').style.transform = en.isIntersecting ? 'translateY(110%)' : '';
+}, { threshold: 0.15 }).observe($('#dat-lich'));
+
+/* ================== VALIDATION & SUBMIT ================== */
+const form = $('#bookingForm');
+function setErr(input, bad) {
+  input.setAttribute('aria-invalid', bad);
+  $('#e-' + input.name).classList.toggle('hidden', !bad);
+  return bad;
+}
+form.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') setErr(e.target, false); });
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = form.elements;
+  const phone = f.phone.value.replace(/[\s.\-]/g, '');
+  const combo = calcCombo();
+  const comboMissing = state.tab === 'combo' && !combo.rooms;
+  $('#comboError').classList.toggle('hidden', !comboMissing);
+  $('#comboError').classList.toggle('flex', comboMissing);
+  const bad = [
+    setErr(f.name, f.name.value.trim().length < 2) && f.name,
+    setErr(f.phone, !PHONE_RE.test(phone)) && f.phone,
+    setErr(f.address, f.address.value.trim().length < 5) && f.address,
+  ].filter(Boolean);
+  if (comboMissing) { $('#comboOptions button[data-d="1"]').focus(); return; }
+  if (bad.length) { bad[0].focus(); return; }
+
+  const payload = {
+    type: state.tab,
+    name: f.name.value.trim(),
+    phone,
+    address: f.address.value.trim(),
+    date: f.date.value || null,
+    slot: f.slot.value,
+    note: f.note.value.trim(),
+    ...(state.tab === 'survey'
+      ? { service: state.service }
+      : { items: combo.lines.map(l => ({ id: l.id, name: l.name, qty: l.q, unitPrice: l.price })), total: combo.total }),
+  };
+
+  const btn = $('#submitBtn');
+  btn.disabled = true; btn.textContent = 'Đang gửi…';
+  try {
+    // TODO: thay bằng API thật, ví dụ:
+    // await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    await new Promise(r => setTimeout(r, 700));
+    console.log('Booking payload:', payload);
+    showModal(payload, combo);
+    form.reset();
+    state.qty = { p20: 0, p50: 0 };
+  } finally {
+    btn.disabled = false;
+    renderAll();
+  }
+});
+
+/* ================== DIALOG ================== */
+let lastFocus = null;
+function showModal(p, combo) {
+  lastFocus = document.activeElement;
+  $('#mName').textContent = p.name;
+  $('#mPhone').textContent = p.phone;
+  const when = `${p.date ? new Date(p.date).toLocaleDateString('vi-VN') + ' · ' : ''}${p.slot}`;
+  $('#mDetail').innerHTML = (p.type === 'survey'
+    ? `<p><b>Khảo sát:</b> ${esc(p.service)}</p>`
+    : combo.lines.map(l => `<p>${esc(l.name)} × ${l.q}</p>`).join(''))
+    + `<p><b>Địa chỉ:</b> ${esc(p.address)}</p><p><b>Thời gian:</b> ${esc(when)}</p>`
+    + (p.type === 'combo' ? `<p class="pt-2 text-base font-extrabold text-success">Tổng: ${vnd(combo.total)}</p>` : '');
+  const m = $('#modal'); m.classList.remove('hidden'); m.classList.add('flex');
+  $('#modalClose').focus();
+}
+function closeModal() {
+  const m = $('#modal'); m.classList.add('hidden'); m.classList.remove('flex');
+  lastFocus?.focus();
+}
+$('#modalClose').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal').classList.contains('hidden')) closeModal(); });
+
+/* ================== BEFORE / AFTER GALLERY ================== */
+const PROJECTS = [
+  { id: 'hoi-truong',          label: 'Hội trường, sàn đá diện tích lớn' },
+  { id: 'bep-phong-an',        label: 'Bếp & phòng ăn sau thi công' },
+  { id: 'nha-ve-sinh-1',       label: 'Nhà vệ sinh căn hộ trước bàn giao' },
+  { id: 'hanh-lang-da',        label: 'Hành lang sàn đá – đánh bóng' },
+  { id: 'phong-gach-caro',     label: 'Phòng lát gạch sau sửa chữa' },
+  { id: 'sanh-kinh-thang-may', label: 'Sảnh kính & khu thang máy' },
+  { id: 'cau-thang-da-1',      label: 'Cầu thang đá sau xây dựng' },
+  { id: 'phong-ngu',           label: 'Phòng ngủ sau thi công' },
+  { id: 'phong-san-go',        label: 'Phòng sàn gỗ' },
+  { id: 'nha-ve-sinh-2',       label: 'Phòng tắm căn hộ' },
+  { id: 'cau-thang-da-2',      label: 'Cầu thang đá – công trình 2' },
+];
+const IMG = 'assets/images/web/';
+let baIndex = 0;
+
+function renderThumbs() {
+  $('#baThumbs').innerHTML = PROJECTS.map((p, i) => `
+    <button type="button" role="listitem" data-ba="${i}" aria-label="Xem công trình: ${esc(p.label)}" aria-current="${i === baIndex}"
+      class="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 transition-colors duration-150 ${i === baIndex ? 'border-primary' : 'border-transparent opacity-80 hover:opacity-100'}">
+      <img src="${IMG}thumbs/${p.id}-sau.jpg" alt="" loading="lazy" width="260" height="225" class="h-full w-full object-cover" />
+    </button>`).join('');
+}
+
+function showProject(i) {
+  baIndex = i;
+  const p = PROJECTS[i];
+  $('#baAfter').src = `${IMG}${p.id}-sau.jpg`;
+  $('#baAfter').alt = `Sau khi làm sạch: ${p.label}`;
+  $('#baBefore').src = `${IMG}${p.id}-truoc.jpg`;
+  $('#baBefore').alt = `Trước khi làm sạch: ${p.label}`;
+  $('#baCaption').innerHTML = `<i data-icon="pin" class="h-5 w-5 text-primary"></i><span class="min-w-0">${esc(p.label)}</span><span class="ml-auto shrink-0 text-sm font-normal text-muted-fg">${i + 1}/${PROJECTS.length}</span>`;
+  hydrateIcons($('#baCaption'));
+  setBA(50);
+  renderThumbs();
+  // Preload the next project for snappy switching
+  const n = PROJECTS[(i + 1) % PROJECTS.length];
+  new Image().src = `${IMG}${n.id}-truoc.jpg`;
+}
+
+function setBA(v) {
+  v = Math.max(0, Math.min(100, v));
+  $('#baBeforeWrap').style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+  $('#baHandle').style.left = v + '%';
+  $('#baRange').value = v;
+}
+
+(() => {
+  const box = $('#ba');
+  let dragging = false;
+  const fromEvent = e => { const r = box.getBoundingClientRect(); setBA(((e.clientX - r.left) / r.width) * 100); };
+  box.addEventListener('pointerdown', e => { dragging = true; box.setPointerCapture(e.pointerId); fromEvent(e); });
+  box.addEventListener('pointermove', e => { if (dragging) fromEvent(e); });
+  ['pointerup', 'pointercancel'].forEach(t => box.addEventListener(t, () => { dragging = false; }));
+  box.addEventListener('click', () => $('#baRange').focus({ preventScroll: true }));
+  $('#baRange').addEventListener('input', e => setBA(Number(e.target.value)));
+  $('#baThumbs').addEventListener('click', e => {
+    const b = e.target.closest('[data-ba]');
+    if (b) { showProject(Number(b.dataset.ba)); $(`[data-ba="${b.dataset.ba}"]`).focus(); }
+  });
+  showProject(0);
+})();
+
+/* ================== INIT ================== */
+form.elements.date.min = new Date().toISOString().slice(0, 10);
+$('#year').textContent = new Date().getFullYear();
+hydrateIcons();
+renderAll();
+</script>
+</body>
+</html>
